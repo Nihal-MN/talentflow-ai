@@ -1,0 +1,44 @@
+# ─── General ──────────────────────────────────────────────────────────────────
+.DS_Store
+*.log
+*.bak
+.idea/
+.vscode/
+
+# ─── Secrets & environment ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+
+# ─── Python / backend ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.egg-info/
+dist/
+build/
+
+# Runtime data (uploads, local sqlite databases)
+backend/data/
+*.db
+*.sqlite3
+
+# ─── Node / frontend ──────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+.eslintcache
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+pgdata/
