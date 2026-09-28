@@ -1,0 +1,25 @@
+Sofia Petrova
+BI & Reporting Analyst
+Abu Dhabi, UAE
+sofia.petrova@example.com | +971 55 555 0177 | linkedin.com/in/sofia-petrova
+
+Summary
+Business intelligence analyst with 4 years of experience in retail reporting. Strong SQL and visualization skills, comfortable owning self-service BI for non-technical teams.
+
+Experience
+BI & Reporting Analyst — Falcon Stores (Abu Dhabi, UAE)
+Apr 2022 – Present
+- Built Looker and Power BI dashboards for 90+ retail stores
+- Wrote advanced SQL transformations and data quality checks
+- Trained store managers on self-service reporting in Excel
+
+Reporting Analyst — Gulf Logistics Co (Dubai, UAE)
+Mar 2020 – Mar 2022
+- Automated weekly operations reports with SQL and Excel
+- Supported the e-commerce team with order analytics
+
+Education
+MSc Business Analytics - Higher School of Economics (2017 - 2019)
+
+Skills
+SQL, Power BI, Looker, Excel, data visualization, communication

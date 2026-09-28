@@ -1,0 +1,25 @@
+Priya Nair
+Full Stack Developer
+Bengaluru, India
+priya.nair@example.com | +91 98450 55127 | linkedin.com/in/priya-nair
+
+Summary
+Full-stack developer with 3 years of experience across the React and Python ecosystems. Ships user-facing features with TypeScript on the frontend and Flask services on the backend.
+
+Experience
+Full Stack Developer — Meridian Retail Tech (Bengaluru, India)
+Aug 2023 – Present
+- Built React and TypeScript store-ops dashboards
+- Developed Flask APIs backed by PostgreSQL
+- Containerized services with Docker for staging environments
+
+Software Developer — Nimbus Software (Kochi, India)
+Jul 2022 – Jul 2023
+- Maintained a Django application and PostgreSQL reports
+- Wrote unit tests with pytest
+
+Education
+B.Tech Computer Science - NIT Calicut (2018 - 2022)
+
+Skills
+React, TypeScript, Python, Flask, PostgreSQL, Docker, pytest, CSS

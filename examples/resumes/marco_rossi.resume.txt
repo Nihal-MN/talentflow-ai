@@ -1,0 +1,25 @@
+Marco Rossi
+Data Scientist
+Dubai, UAE
+marco.rossi@example.com | +971 54 555 0188 | linkedin.com/in/marco-rossi
+
+Summary
+Data scientist with 6 years of experience in classical machine learning and forecasting. Strong statistical foundation; currently extending skills into modern NLP and LLM tooling.
+
+Experience
+Data Scientist — Levant Foods (Dubai, UAE)
+Mar 2021 – Present
+- Forecasting demand with gradient boosting models in Python
+- Built feature pipelines with pandas and numpy
+- Presented model results to non-technical stakeholders
+
+Junior Data Analyst — Adriatic Consulting (Milan, Italy)
+Jan 2019 – Feb 2021
+- Built SQL reporting and Excel models for retail clients
+- Supported forecasting projects with TensorFlow prototypes
+
+Education
+MSc Statistics - University of Bologna (2016 - 2018)
+
+Skills
+Python, pandas, numpy, scikit-learn, TensorFlow, SQL, Excel, stakeholder management
