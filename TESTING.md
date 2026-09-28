@@ -78,11 +78,21 @@ sequence below is exactly what was run, including the bug it caught — see
 14. `python -m app.seed --reset` loads the full demo dataset (4 jobs,
     10 candidates, 10 applications, notes, tags, question sets).
 
-**Found by acceptance, fixed, covered:** the multi-file upload handler read
-the *live* `FileList` after the input was cleared, silently dropping every
-file after the first (`parsing…` forever). Fixed by snapshotting the list
-(`Array.from`) before iterating; the candidates page tests and this checklist
-now guard it.
+**Found by acceptance, fixed, covered:**
+
+1. Multi-file upload read the *live* `FileList` after the input was cleared,
+   silently dropping every file after the first (`parsing…` forever). Fixed by
+   snapshotting the list before iterating.
+2. Stage controls on pipeline cards clipped their buttons in narrow columns —
+   fixed with a wrapping control row.
+3. **Found by the PostgreSQL/audit E2E run:** the skill alias `js` false-fired
+   inside "Node.js", creating a phantom `javascript` requirement. Fixed by
+   rejecting a preceding dot in alias boundaries; regression test:
+   `test_js_alias_does_not_fire_inside_compound_names`.
+4. **Found by running the seed against real PostgreSQL:** embedding inserts
+   bound text instead of lists (pgvector rejected them) and the `<=>` distance
+   expression inherited the vector result type. Both fixed and verified live
+   (commits `b6143b3`, `e6e0005`).
 
 ## Coverage philosophy
 
