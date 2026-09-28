@@ -397,9 +397,14 @@ class SkillHit:
 
 
 def _alias_pattern(alias: str) -> re.Pattern[str]:
-    """Word-bounded, case-insensitive pattern; ``+``/``#``/``.`` safe."""
+    """Word-bounded, case-insensitive pattern; ``+``/``#``/``.`` safe.
+
+    The lookbehind also rejects a preceding dot so short aliases like ``js``
+    cannot match inside compound names such as "Node.js" or "Vue.js" (whose
+    canonical skills are detected via their own, longer aliases).
+    """
     escaped = re.escape(alias).replace(r"\ ", r"\s+")
-    return re.compile(rf"(?<![A-Za-z0-9+#]){escaped}(?![A-Za-z0-9+#])", re.IGNORECASE)
+    return re.compile(rf"(?<![A-Za-z0-9+#.]){escaped}(?![A-Za-z0-9+#])", re.IGNORECASE)
 
 
 #: (canonical, alias, pattern) sorted by alias length so longer aliases win.

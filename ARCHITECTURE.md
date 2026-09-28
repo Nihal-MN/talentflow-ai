@@ -5,26 +5,33 @@
 
 ## 1. System context
 
+```mermaid
+flowchart TB
+    R([Recruiter]) -->|browser| WEB["Next.js 16 UI<br/>React 19 · TypeScript · Tailwind 4"]
+    WEB -->|"JSON/HTTP · typed client · CORS allow-list"| API["FastAPI application layer<br/>/api/v1/* · structured errors · request logging"]
+    API --> SVC["Domain services<br/>jobs · candidates · pipeline · screening<br/>(the only mutation choke-point)"]
+    SVC --> MATCH["Matching engine<br/>deterministic-first · explainable<br/>composite = published weights"]
+    SVC --> AI{{"AI adapters<br/>(LLMProvider / EmbeddingProvider)"}}
+    MATCH --> AI
+    AI -->|key configured| OAI["OpenAI<br/>Responses API · structured outputs<br/>text-embedding-3-small"]
+    AI -->|"default · no key"| MOCK["Deterministic mock<br/>rule-based extraction · hashed embeddings"]
+    SVC --> DB[("PostgreSQL + pgvector<br/>Docker · HNSW cosine index")]
+    MATCH --> DB
+    DB -.->|"zero-setup dev/tests"| SQLITE[("SQLite<br/>same Alembic migrations")]
+
+    classDef store fill:#eef2ff,stroke:#4f46e5;
+    class DB,SQLITE store;
+```
+
+The full request path the audit was asked to trace:
+
 ```text
-┌──────────────┐   JSON/HTTP (CORS)   ┌───────────────────────────┐
-│  Recruiter   │ ───────────────────► │  FastAPI application      │
-│  (browser)   │ ◄─────────────────── │  /api/v1/*, /docs         │
-└──────────────┘                      └────────────┬──────────────┘
-        ▲                                          │
-        │ Next.js 16 (React 19)                    ▼
-        │ serves the UI, typed client        Domain services
-                                                 │  jobs / candidates /
-                                                 │  pipeline / screening
-                                                 ▼
-                                        Matching engine (transparent)
-                                                 │
-                                                 ▼
-                                        AI adapters (ADR 0002)
-                                        OpenAI ──or── deterministic mock
-                                                 │
-                                                 ▼
-                              PostgreSQL + pgvector (Docker)
-                              SQLite (dev/tests) — same migrations
+Recruiter → Next.js frontend → FastAPI (/api/v1) → domain services
+        → matching engine (deterministic evaluation + evidence, semantic
+          similarity as supporting signal)
+        → AI adapters (OpenAI when configured, deterministic mock by default)
+        → PostgreSQL + pgvector (embeddings, HNSW cosine index)
+        → ranked, fully explained match results back to the browser.
 ```
 
 ## 2. Backend layering (modular monolith — ADR 0001)
@@ -103,6 +110,23 @@ certification|domain|location|other, label, normalized_skill, min_years,
 keywords}`.
 
 ### 4.3 Matching (ADR 0003 — the algorithm)
+
+```mermaid
+flowchart LR
+    REQ["Job requirement<br/>(kind · category · label · skill · min_years)"] --> DET{"Deterministic evaluation"}
+    DET -->|skill| SK["canonical match ⇒ met<br/>family-related ⇒ partial<br/>text mention ⇒ met<br/>else missing"]
+    DET -->|experience| EXP["years vs min_years<br/>±1.5y ⇒ partial"]
+    DET -->|education| EDU["degree-equivalence<br/>expansion (BSc ≈ Bachelor's)"]
+    DET -->|location/domain/cert| LOC["field & keyword evidence"]
+    DET -->|soft 'other'| SOFT["advisory — never scored"]
+    SK & EXP & EDU & LOC --> EV["evidence retrieval<br/>quoted resume snippets"]
+    SK & EXP & EDU & LOC --> COMP["composite score<br/>must 0.60 · pref 0.20 · exp 0.10 · domain 0.10<br/>re-normalized over present components"]
+    SEM["semantic similarity<br/>(pgvector / hashed embeddings)"] -. supporting signal only .-> EV
+    COMP --> OUT["ranked, fully explained results"]
+    EV --> OUT
+```
+
+The per-requirement evaluation in detail:
 
 ```text
               ┌────────────────────────────────────────────────────┐
@@ -189,16 +213,20 @@ codebase knows which database is in use.
 
 ## 8. Testing strategy
 
-See `TESTING.md` for the full matrix. Shape of it:
+See `TESTING.md` for the full matrix. Shape of it (final audit numbers,
+28 Sep 2026: **94/94 backend tests pass against PostgreSQL, 93 pass + 1
+integration on SQLite, 18/18 frontend, coverage 91%**):
 
 * unit: skill taxonomy, normalization, mock extraction, matching guarantees,
   embeddings math, document decoding;
 * API/integration: every router (including error shapes), pipeline audit trail,
   screening lifecycle, health;
 * migration round-trip on a throwaway database;
-* PostgreSQL+pgvector integration test (CI service container) + dialect-level
-  SQL compile checks that run everywhere;
+* PostgreSQL+pgvector integration test (runs against the Docker database
+  locally and the CI service container remotely) + dialect-level SQL compile
+  checks that run everywhere;
 * frontend: component tests (match card, stage controls, badges) and client
   error-handling tests;
 * manual acceptance: documented checklist executed against a live stack with
-  screenshots (`docs/screenshots/`).
+  screenshots (`docs/screenshots/`), including a full wipe-and-rebuild
+  Docker clean-start run.

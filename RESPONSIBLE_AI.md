@@ -90,8 +90,17 @@ what it refuses to do, and how the engineering enforces it.
 ## 7. How to verify these claims
 
 * `backend/tests/test_matching_engine.py` — behavioral guarantees and the
-  protected-columns structural guard.
+  protected-columns structural guard
+  (`test_no_protected_attribute_columns_exist_anywhere` walks the entire
+  SQLAlchemy metadata and fails on any age/gender/ethnicity/religion/
+  disability/marital-status/media column).
 * `backend/tests/test_extraction_mock.py`, `test_normalization.py` — input
-  handling and validation gates.
+  handling, alias-boundary precision, and validation gates.
 * `RESPONSIBLE_AI` mapping in the UI: matching page footer and screening
   panel both link to this document from the running app.
+* **Audit re-verification (28 Sep 2026):** full-repository sweep found no
+  protected-attribute fields in schemas, prompts, tests or demo data; the E2E
+  run produced screening questions in categories
+  `technical / gap_probe / experience / behavioral` only (asserted in
+  `test_screening_api.py`); no question or rationale referenced personal
+  circumstances; the composite formula is rendered verbatim in the UI.

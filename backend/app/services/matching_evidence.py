@@ -108,8 +108,10 @@ def terms_from_requirement(requirement: JobRequirement) -> list[str]:
 
 
 def _term_regex(term: str) -> re.Pattern[str]:
+    """Word-bounded term pattern; a preceding dot is rejected so short terms
+    like ``js`` can't match inside "Node.js" (mirrors the skill lexicon)."""
     escaped = re.escape(term).replace(r"\ ", r"\s+")
-    return re.compile(rf"(?<![A-Za-z0-9+#]){escaped}(?![A-Za-z0-9+#])", re.IGNORECASE)
+    return re.compile(rf"(?<![A-Za-z0-9+#.]){escaped}(?![A-Za-z0-9+#])", re.IGNORECASE)
 
 
 def find_evidence_lines(

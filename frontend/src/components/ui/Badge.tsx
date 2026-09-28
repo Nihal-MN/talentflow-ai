@@ -42,14 +42,6 @@ export function TagBadge({ name, color = "slate" }: { name: string; color?: stri
   return <Badge className={TAG_COLORS[color] ?? TAG_COLORS.slate}>{name}</Badge>;
 }
 
-export function Chip({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
-      {children}
-    </span>
-  );
-}
-
 export function MethodBadge({ method }: { method: string }) {
   const isMock = method === "mock";
   return (

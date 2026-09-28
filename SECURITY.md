@@ -73,3 +73,19 @@ Resumes and job descriptions are hostile-by-default input.
 * Rate limiting / abuse protection at the edge (use a reverse proxy).
 * File-type fingerprinting beyond extension + parser safety.
 * Multi-tenant isolation (single-tenant by design in the demo).
+
+## 7. Audit results (28 Sep 2026, full-repository review)
+
+| Check | Method | Result |
+|---|---|---|
+| Secrets in git history | scanned every commit diff for `sk-…` / AWS-key patterns | **none found** |
+| Committed environment files | tracked-file listing | only `.env.example`; real `.env` is git-ignored and untracked |
+| Hardcoded credentials | grep for password/api_key/secret literals in app code | none |
+| TODO/FIXME/placeholder leftovers | grep across app, tests, docs, CI | none in our code |
+| Untracked local artifacts | `git status --ignored` | local DBs/uploads/caches all covered by `.gitignore` |
+| Upload handling | code review + tests | extension allow-list, 10 MB cap, 200k-char text cap, parser isolation, typed user-safe errors (`test_documents.py`, `test_candidates_api.py`) |
+| SQL injection | code review | SQLAlchemy parameter binding everywhere; the only raw SQL strings are fixed DDL in the migration and the pgvector `<=>` expression with bound parameters; a matching test searches with quote-laden input |
+| PII in logs | code review | request logger records method/path/status/duration only; no bodies |
+| CORS | config review + live check | explicit origin allow-list (`CORS_ORIGINS`), credentials disabled |
+| Dependency hygiene | import sweep | unused `email-validator`/`httpx` removed; lockfiles frozen in CI |
+| Secret exposure via API | `test_health.py` asserts the health payload contains no key material; System Health shows only a boolean | pass |

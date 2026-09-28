@@ -14,7 +14,6 @@ directions are verified against a real PostgreSQL server in CI.
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from sqlalchemy import Index, Integer, String, Text, TypeDecorator, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
@@ -96,9 +95,3 @@ class EmbeddingRecord(Base, TimestampMixin):
 def vector_to_literal(vector: list[float]) -> str:
     """Serialize a vector to pgvector's text form (``'[1,2,3]'``) for raw SQL."""
     return json.dumps([float(x) for x in vector])
-
-
-def _coerce_value(value: Any) -> list[float] | None:  # pragma: no cover - helper
-    if value is None:
-        return None
-    return [float(x) for x in value]

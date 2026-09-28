@@ -1,200 +1,278 @@
 # TalentFlow AI
 
-**Open-source AI-native hiring pipeline and explainable candidate matching platform.**
+**Open-source AI-native hiring pipeline with structured talent data, explainable candidate matching, semantic search and recruiter-in-the-loop workflows.**
 
 [![CI](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml)
-![Backend tests: 94 total](https://img.shields.io/badge/backend_tests-94_total-brightgreen)
+![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-94_passing_on_PostgreSQL-brightgreen)
 ![Frontend tests: 18 passing](https://img.shields.io/badge/frontend_tests-18_passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-TalentFlow AI ingests job descriptions and resumes, turns them into **validated
-structured talent data**, performs **explainable candidate-to-job matching**, and
-lets a recruiter manage candidates through a hiring pipeline — NEW → HIRED —
-with evidence, notes, tags and candidate-specific screening questions.
-
-Two things make it different from a typical "AI hiring" demo:
-
-1. **No mysterious AI score.** Matching is deterministic-first: every
-   requirement gets `met / partial / missing / unknown` with a written reason
-   and quotes from the candidate's own resume. The composite score shows its
-   formula and weights right in the UI. The recruiter decides — the AI assists.
-2. **It runs anywhere, honestly.** Without an OpenAI key it runs in a fully
-   deterministic **mock mode** (clearly labeled everywhere); with a key it uses
-   the current OpenAI API with structured outputs. Tests never need a network.
-
-<!-- Screenshots (see docs/screenshots/) -->
-| Dashboard | Explainable matching |
-|---|---|
-| ![Dashboard](docs/screenshots/11_dashboard_seeded.png) | ![Matching](docs/screenshots/05_matching.png) |
-
-| Pipeline board | System health |
-|---|---|
-| ![Pipeline](docs/screenshots/13_pipeline_seeded.png) | ![Health](docs/screenshots/10_health.png) |
-
 ---
 
-## The problem
+## Problem
 
-Recruiting teams drown in unstructured text: job descriptions and hundreds of
-resumes, none of it queryable, comparable or auditable. The products that
-promise to fix this with a single opaque "AI match score" make hiring **less**
-accountable, not more. TalentFlow AI demonstrates the opposite approach:
+Recruiting teams drown in unstructured text — job descriptions and hundreds of
+resumes, none of it queryable, comparable or auditable. "AI hiring" products
+that reduce candidates to one opaque score make hiring *less* accountable, not
+more: nobody can explain the number, nobody can defend it to a candidate, and
+automation bias quietly does the deciding.
 
-* structure first — validated data models, never raw model output as truth;
-* explainability always — coverage, gaps and source evidence per requirement;
-* human authority — the platform never issues a hire / no-hire verdict;
-* responsible AI by construction — protected characteristics are excluded from
-  the schema, the matching engine and the prompts (see `RESPONSIBLE_AI.md`).
+## Solution
 
-## Features
+TalentFlow AI turns JDs and resumes into **validated structured data**, then
+matches candidates requirement-by-requirement with **quoted evidence from the
+candidate's own resume** and a **published scoring formula**. A recruiter moves
+candidates through a real hiring pipeline; the AI assists, the human decides.
+It runs out of the box **without any API key** (deterministic mock mode,
+labeled as such everywhere) and uses the current OpenAI API with structured
+outputs when a key is configured.
 
-**Recruiting workflow**
+## Screenshots
+
+| Dashboard | Match analysis (explainable scoring) |
+|---|---|
+| ![Dashboard](docs/screenshots/portfolio_01_dashboard.png) | ![Matching](docs/screenshots/portfolio_04_match_analysis.png) |
+
+| Candidate profile | Pipeline board |
+|---|---|
+| ![Candidate](docs/screenshots/portfolio_03_candidate_profile.png) | ![Pipeline](docs/screenshots/portfolio_05_pipeline.png) |
+
+| Jobs | Screening questions | System health |
+|---|---|---|
+| ![Jobs](docs/screenshots/portfolio_02_jobs.png) | ![Screening](docs/screenshots/portfolio_06_screening.png) | ![Health](docs/screenshots/portfolio_07_health.png) |
+
+More (including the full acceptance run and the Docker/PostgreSQL verification)
+in `docs/screenshots/`.
+
+## Key features
 
 * **Jobs** — create from pasted text or an uploaded JD (PDF/DOCX/TXT);
-  requirements are extracted into must-have vs preferred with skills, years,
+  requirements extracted into must-have vs preferred with skills, years,
   education, location and domain signals.
-* **Candidates** — multi-file resume upload; PDF/DOCX/TXT parsing into
-  validated profiles: experience timeline, education, certifications, skills
-  (with an evidence line for each), and computed years of experience.
-* **Matching** — ranked, requirement-by-requirement evaluation with quoted
-  evidence, component breakdown and a documented composite formula. Semantic
-  similarity (pgvector / hashed embeddings) is a supporting signal — it never
-  overrides a deterministic miss.
-* **Pipeline** — NEW / SCREENING / SHORTLISTED / INTERVIEW / OFFER / HIRED /
-  REJECTED board with an audit trail of every stage move.
-* **Notes & tags** — recruiter notes with author and timestamps; colored tags.
-* **Screening questions** — generated per application, grounded in match
-  results (strongest matches, honest gap probes, seniority-calibrated
-  behavioral questions), each with a rationale.
-* **System health** — live database, AI configuration and data-count checks;
-  no secrets are ever exposed.
+* **Candidates** — multi-file resume upload; validated profiles with
+  experience timeline, education, certifications, canonicalized skills (each
+  with an evidence line) and computed years of experience.
+* **Matching** — ranked, requirement-by-requirement: `met / partial / missing /
+  unknown`, related-skill partial credit, quoted evidence, component breakdown,
+  published weights, deterministic ranking.
+* **Pipeline** — NEW → SCREENING → SHORTLISTED → INTERVIEW → OFFER → HIRED
+  (+ REJECTED off-ramp) with an append-only audit trail of every move.
+* **Notes & tags** — recruiter context with author and timestamps.
+* **Screening questions** — per application, grounded in match results
+  (strengths, honest gap probes, seniority-calibrated behavioral), each with a
+  rationale.
+* **System health** — live database + AI configuration checks, counts, no
+  secret exposure.
 
-**Engineering**
+## How AI is used
 
-* FastAPI + Pydantic v2 + SQLAlchemy 2.0 backend; Next.js 16 + React 19 +
-  TypeScript + Tailwind 4 frontend.
-* PostgreSQL + pgvector in Docker; zero-setup SQLite fallback for local dev
-  and tests (same migrations for both).
-* LLM/embedding providers behind interfaces (`app/ai/base.py`) with a
-  deterministic offline mock — no key required, tests fully hermetic.
-* 95 backend tests (91% coverage) + 18 frontend tests + CI on GitHub Actions
-  running the full suite against real PostgreSQL + pgvector.
+AI is used in exactly **four** places, each behind a provider interface with a
+deterministic offline counterpart:
+
+| Task | Provider | Output validation |
+|---|---|---|
+| JD → structured job + requirements | OpenAI Responses API, structured outputs | Pydantic schema, then normalization (canonical skills, range checks) |
+| Resume → structured candidate profile | same | same |
+| Screening-question generation | same | Pydantic schema (categories restricted), stored with rationale |
+| Embeddings for semantic similarity | `text-embedding-3-small` (1536-dim) | dimension guard; embedder recorded per vector |
+
+Everything else — requirement evaluation, evidence retrieval, scoring,
+ranking, pipeline logic — is deterministic Python. Without `OPENAI_API_KEY`
+the platform runs the **mock provider** (rule-based parsers + hashed-ngram
+embeddings) and every record is labeled `extraction_method="mock"` in the API,
+database and UI. See `AI_DESIGN.md`.
+
+## Explainable matching
+
+No mysterious score. For every candidate↔job pair the engine returns:
+
+* per-requirement status with a **written reason** (`met`, `partial`,
+  `missing`, `unknown`, `advisory` for soft requirements);
+* **quoted evidence** for met/partial requirements — snippets that literally
+  appear in the candidate's resume text (or an explicitly computed statement
+  like "7.2 years across 2 dated roles, computed from resume dates");
+* **coverage counts** (must-have / preferred: met / partial / missing);
+* a **composite score with its published formula** rendered in the UI, e.g.
+  `0.60·must_have[75%] + 0.20·preferred[50%] + 0.10·experience[100%] + 0.10·domain[100%] = 75/100 (weights re-normalized over present components)`;
+* **semantic similarity** as a supporting signal that can never override a
+  deterministic miss.
+
+The engine version is included in every result; the same inputs always produce
+the same output. See `ARCHITECTURE.md §4.3` and `docs/adr/0003`.
+
+## Responsible AI
+
+No protected characteristics are used, stored or inferred — there is no
+column, prompt, or code path for age, gender, ethnicity, religion, disability,
+marital status, nationality-as-proxy or photos. A structural test fails the
+suite if such a column ever appears; prompts explicitly exclude them; the
+platform never issues hire/no-hire verdicts. Read `RESPONSIBLE_AI.md` — it is
+a contract, not marketing.
+
+## Technology stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · self-hosted Inter |
+| Backend | Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy 2.0 · Alembic |
+| Database | PostgreSQL 16 + pgvector (HNSW cosine index) · SQLite fallback for dev/tests |
+| AI | OpenAI Responses API (structured outputs) + deterministic mock; embeddings 1536-dim |
+| Infra | Docker + Docker Compose (any Docker daemon — Desktop, Colima, remote) |
+| Quality | pytest (94 tests, 91% coverage) · vitest + Testing Library (18 tests) · ruff · ESLint · strict tsc · GitHub Actions |
 
 ## Quick start
 
-### Option A — Docker Compose (full stack, PostgreSQL + pgvector)
+### Docker (full stack: PostgreSQL + pgvector)
 
 ```bash
 git clone <your-fork-url> talentflow-ai && cd talentflow-ai
 cp .env.example .env            # optional — every value has a safe default
-docker compose up --build -d    # builds api + web + db
+docker compose up --build -d
 docker compose exec api python -m app.seed   # load the synthetic demo dataset
 ```
 
-> Works with **any Docker daemon** — Docker Desktop, [Colima](https://github.com/abiosoft/colima)
-> (fully CLI, no license gate), or a remote daemon. The compose stack was
-> verified end-to-end against Colima + the `pgvector/pgvector:pg16` image.
+Wait for `docker compose ps` to show `db` and `api` as **healthy**, then open:
 
-Open **http://localhost:3000** (UI) and **http://localhost:8000/docs** (API).
-No OpenAI key needed — the default is deterministic mock mode.
+* **UI:** http://localhost:3000
+* **API docs (Swagger):** http://localhost:8000/docs
+* **Health:** http://localhost:8000/api/v1/health
 
-### Option B — native dev (no Docker, SQLite)
+### Native (no Docker, SQLite)
 
 ```bash
 cp .env.example .env
 cd backend && uv sync && uv run alembic upgrade head && uv run python -m app.seed && cd ..
 cd frontend && npm install && cd ..
-make dev        # starts API (:8000) + web (:3000) together
+make dev        # API :8000 + web :3000 together
 ```
 
-Requirements: Python 3.12 (via [uv](https://docs.astral.sh/uv/)), Node 20+.
+Requirements: Python 3.12+ (via [uv](https://docs.astral.sh/uv/)), Node 20+.
 
-### Enabling the OpenAI path (optional)
+### Stopping
 
 ```bash
-# .env
-OPENAI_API_KEY=sk-...        # AI_PROVIDER=auto picks it up
+docker compose down          # stop the stack (data volumes kept)
+make dev                     # native: Ctrl-C stops both processes
 ```
 
-`AI_PROVIDER` can be `auto` (default), `openai` or `mock`. Whatever produced a
-record is stored and displayed (`extraction_method`), so mock and real data are
-never silently mixed. Defaults: `gpt-5.6-terra` for extraction,
-`text-embedding-3-small` (1536-dim) for embeddings.
+## Environment variables
 
-## Demo data
+All optional — the defaults run the full demo. See `.env.example`.
 
-`python -m app.seed` (or `make seed` with Docker) creates a **fully synthetic**
-dataset — 4 fictional job postings and 10 fictional candidates whose resumes
-exist as real PDF/DOCX/TXT files in `examples/resumes/` and are ingested
-through the *same pipeline a real upload uses*. `--reset` wipes and rebuilds.
-No real person's data is ever included.
+| Variable | Default | Purpose |
+|---|---|---|
+| `OPENAI_API_KEY` | *(unset)* | enables the live OpenAI path (`AI_PROVIDER=auto` picks it up) |
+| `AI_PROVIDER` | `auto` | `auto` \| `openai` \| `mock` |
+| `OPENAI_MODEL` | `gpt-5.6-terra` | extraction / screening model |
+| `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small` | embeddings (1536-dim) |
+| `DATABASE_URL` | *(empty → SQLite)* | PostgreSQL URL (set by compose) |
+| `CORS_ORIGINS` | `http://localhost:3000,http://127.0.0.1:3000` | allowed browser origins |
+| `UPLOAD_DIR` | `./data/uploads` | uploaded file storage |
+| `LOG_LEVEL` / `LOG_FORMAT` | `INFO` / text | `LOG_FORMAT=json` for structured logs |
+| `WEB_PORT` / `API_PORT` / `POSTGRES_PORT` | `3000` / `8000` / `5432` | compose port mappings |
+| `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8000` | where the browser reaches the API |
+
+Secrets are never committed; `.env` is git-ignored; System Health shows only
+*whether* a key is configured.
+
+## Demo mode
+
+The default mode is a **deterministic demo**: no API key needed, no network
+calls, identical output for identical input. The seed command loads 4 fictional
+job postings and 10 fictional candidates whose resumes exist as real
+PDF/DOCX/TXT files (`examples/resumes/`) and are ingested through the same
+pipeline a live upload uses. `python -m app.seed --reset` wipes and rebuilds.
+
+**Mock vs live is never ambiguous:** every extracted record carries
+`extraction_method` (`mock` / `openai`), the UI badges it, and System Health
+states the active mode explicitly.
 
 ## Testing
 
 ```bash
-make test                # backend (pytest) + frontend (vitest + typecheck)
-cd backend && uv run pytest                       # 95 tests, 91% coverage
-cd frontend && npm test && npm run typecheck      # 18 tests + strict TS
-cd backend && uv run python scripts/smoke_api.py  # end-to-end flow, human-readable
+make test                                  # everything below, one command
+
+cd backend && uv run pytest                # 93 passed + 1 skipped (SQLite run)
+cd backend && uv run ruff check app tests  # lint
+# with the Docker database running — nothing skips:
+cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
+  uv run pytest                            # 94 passed
+
+cd frontend && npm test && npm run typecheck   # 18 passed + strict TS
 ```
 
-CI additionally runs the whole backend suite against **PostgreSQL + pgvector**
-and builds all Docker images — see `.github/workflows/ci.yml` and
-`TESTING.md` for the full matrix and the manual acceptance workflow.
+Coverage: 91% backend. CI runs the same suites (against a real
+PostgreSQL+pgvector service container) plus Docker image builds — see
+`.github/workflows/ci.yml` and `TESTING.md` for the acceptance checklist and
+the E2E scenario.
 
-## Architecture
+## Project structure
 
 ```text
-Browser (Next.js App Router, typed API client)
-        │  JSON over HTTP (CORS)
-        ▼
-FastAPI application layer  ── structured errors, request logging
-        │
-        ▼
-Domain services            ── jobs, candidates, pipeline, screening
-        │      │
-        │      └── matching engine (deterministic-first, explainable)
-        ▼
-AI adapter layer           ── OpenAI (structured outputs) │ deterministic mock
-        │
-        ▼
-PostgreSQL + pgvector (runtime) │ SQLite (dev/tests) — same Alembic migrations
+talentflow-ai/
+├── backend/            FastAPI app
+│   ├── app/
+│   │   ├── ai/         provider interfaces + OpenAI & deterministic mock
+│   │   ├── api/        routes, deps, serializers, middleware
+│   │   ├── core/       config, logging, errors, dates
+│   │   ├── db/         engine/session, declarative base
+│   │   ├── models/     SQLAlchemy models (incl. dialect-aware vector column)
+│   │   ├── schemas/    Pydantic request/response models
+│   │   ├── services/   jobs, candidates, pipeline, screening, matching,
+│   │   │               normalization, documents, embeddings_store, skills
+│   │   └── seed/       synthetic dataset + `python -m app.seed`
+│   ├── alembic/        migrations (PostgreSQL + SQLite)
+│   └── tests/          94 tests
+├── frontend/           Next.js app (9 pages + typed client + UI kit)
+├── docs/               ADRs, screenshots, deep dives
+├── examples/           synthetic JDs + resume files (PDF/DOCX/TXT)
+└── scripts/            dev launcher
 ```
 
-Full details: **`ARCHITECTURE.md`** (layers, data model, matching algorithm,
-dialect strategy), **`AI_DESIGN.md`** (prompts, schemas, mock determinism,
-embeddings), **`API.md`** (endpoint reference).
+## API overview
 
-### Repository layout
+`http://localhost:8000/docs` is the interactive reference; the full table is
+in `API.md`. Shape of it:
 
-```text
-backend/    FastAPI app, domain services, AI adapters, migrations, tests, seed
-frontend/   Next.js app: 9 pages (dashboard, jobs, candidates, matching,
-            pipeline, screening, health) + typed client + UI kit
-docs/       ADRs, screenshots, deep-dive documentation
-examples/   Synthetic demo JDs + resume files (PDF/DOCX/TXT)
-scripts/    dev launcher
-```
+| Group | Endpoints |
+|---|---|
+| System | `GET /api/v1/health/live`, `GET /api/v1/health` |
+| Jobs | `GET/POST /jobs`, `POST /jobs/upload`, `GET/PATCH/DELETE /jobs/{id}` |
+| Candidates | `GET /candidates`, `POST /candidates/upload`, `GET/DELETE /candidates/{id}`, notes & tags sub-resources |
+| Pipeline | `GET/POST /applications`, `GET /applications/board`, `GET /applications/activity`, `PATCH /applications/{id}/stage` |
+| Matching | `GET /matching/job/{id}`, `GET /matching/candidate/{id}`, `GET /matching/pair` |
+| Screening | `GET /screening`, `GET/POST /screening/applications/{id}[/generate]` |
 
-## Responsible AI
-
-TalentFlow AI is built so that automated bias has nowhere to hide:
-no protected-attribute columns exist anywhere in the schema, the engine refuses
-to use or infer them, prompts explicitly exclude them, and every automated
-judgement is traceable to quoted source evidence. The platform never makes a
-hire/no-hire decision. Read **`RESPONSIBLE_AI.md`** — it is the contract.
+All errors share one shape: `{"error": {"code", "message", "detail?"}}`.
 
 ## Roadmap
 
-* Authentication + multi-tenant workspaces (the service layer is ready for it).
+* Authentication + multi-tenant workspaces (the service layer is the single
+  mutation choke-point, ready for an auth wrapper).
 * Interview scheduling and structured interview scorecards.
-* Email/ATS integrations and CSV export.
-* Next.js 16 ahead-of-time route improvements; incremental static rendering for
-  the dashboard.
-* Optional reranking evaluation harness for the OpenAI provider.
+* CSV export; ATS/email integrations.
+* Reranking evaluation harness for the OpenAI provider.
+* Next.js 16 incremental static rendering for the dashboard.
 
-## License & contributing
+## Known limitations
 
-MIT — see `LICENSE`. Contributions welcome: see `CONTRIBUTING.md`, and please
-read `SECURITY.md` before reporting anything sensitive. The demo data is
-synthetic; never contribute real candidate information.
+* **No authentication** — do not expose the demo to the public internet as-is.
+* The **mock extractor** is a curated lexicon + rules engine: precision over
+  recall, English-centric. It powers the keyless demo, never claims to be a
+  model, and is labeled per record.
+* **Years of experience** are computed from resume dates (merged ranges), not
+  a life history.
+* Scanned/image PDFs are rejected (no OCR); upload a text-based file.
+* pgvector similarity in mock mode approximates lexical overlap (hashed
+  n-grams), not learned semantics.
+* Single-process deployment profile (uvicorn workers, no queue) — appropriate
+  for demo scale; documented in `SECURITY.md` and `ARCHITECTURE.md`.
+
+## Contributing
+
+See `CONTRIBUTING.md` — synthetic data only, explainability guarantees are a
+contract, and `main` stays green. Security issues: `SECURITY.md`.
+
+## License
+
+MIT — see `LICENSE`.

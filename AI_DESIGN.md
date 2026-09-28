@@ -4,6 +4,17 @@ How the intelligence layer works, why it is shaped this way, and what it
 deliberately does **not** do. Companion documents: `RESPONSIBLE_AI.md`
 (principles), `docs/adr/0002` (provider adapters), `docs/adr/0003` (matching).
 
+## 0. At a glance (audit summary)
+
+| Question | Answer |
+|---|---|
+| **What uses AI?** | JD extraction, resume extraction, screening-question generation (LLM); embeddings for semantic similarity (embedding model). That is the complete list. |
+| **Why AI there?** | Free-text documents have no stable format; an LLM with structured outputs turns them into validated data far more robustly than regex. Screening questions need natural language grounded in match context. |
+| **What stays deterministic?** | The entire matching verdict: requirement statuses, coverage, evidence retrieval, composite score, ranking, and the pipeline. Semantic similarity is a *supporting* number, never a decision. |
+| **How are outputs validated?** | OpenAI responses are parsed straight into Pydantic models (`app/ai/schemas.py`, `responses.parse(..., text_format=...)`); then a normalization layer canonicalizes/dedupes/range-checks (`app/services/normalization.py`). Raw model output never reaches the database. |
+| **What happens when AI fails?** | The request fails with a typed `503 provider_unavailable` and a clear message; nothing is persisted and nothing is fabricated. Without any key the platform runs the deterministic mock provider instead (label per record: `extraction_method`). |
+| **Is mock output ever presented as live AI?** | Never. Mock and OpenAI output are labeled on every profile, requirement list, screening set and in System Health; stored vectors record their embedder (`mock:hashed-ngram-v1` vs `openai:text-embedding-3-small`). |
+
 ## 1. Principles
 
 1. **Providers behind interfaces.** Nothing in the domain layer imports an AI
@@ -119,9 +130,14 @@ Already summarized in `ARCHITECTURE.md §4.3`; the AI-specific point:
 ## 8. Costs, limits, failure modes
 
 * Documents are capped (10 MB uploads, 60k chars to the model, 200k chars
-  stored); embeddings cap at 24 chunks/owner.
+  stored); embeddings cap at 24 chunks/owner; the OpenAI client uses a single
+  request per operation — **no hidden retry loops and no background jobs**, so
+  token spend per user action is bounded and predictable.
 * Provider errors → typed 503 with the upstream message; retries are left to
-  the caller by design (no hidden retry loops).
+  the caller by design.
 * The mock's precision-over-recall tradeoff is deliberate: unknown skills are
-  kept as candidates rather than guessed; the lexicon is a single editable
-  data table (`app/services/skills.py`).
+  kept as found rather than guessed; the lexicon is a single editable data
+  table (`app/services/skills.py`).
+* Boundary-matching precision matters as much as recall — e.g. the alias `js`
+  is prevented from firing inside compound names like "Node.js" (regression
+  test: `test_js_alias_does_not_fire_inside_compound_names`).

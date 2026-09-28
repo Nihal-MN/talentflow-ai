@@ -47,6 +47,20 @@ def test_extract_skills_avoids_substring_false_positives():
     assert "java" not in hits  # 'java' must not match inside 'javascript'-free text
 
 
+def test_js_alias_does_not_fire_inside_compound_names():
+    """Regression: 'Node.js' must yield node.js — and NOT a phantom 'javascript'."""
+    hits = {hit.canonical for hit in extract_skills("Expert-level Node.js development")}
+    assert "node.js" in hits
+    assert "javascript" not in hits
+
+    hits = {hit.canonical for hit in extract_skills("Vue.js and Next.js experience")}
+    assert "vue" in hits and "next.js" in hits
+    assert "javascript" not in hits
+
+    # A standalone "JS" mention still counts.
+    assert "javascript" in {hit.canonical for hit in extract_skills("Strong JS skills")}
+
+
 # ── Normalization ───────────────────────────────────────────────────────────
 
 

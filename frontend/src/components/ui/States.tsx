@@ -5,18 +5,6 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import type { ApiError } from "@/lib/api";
 
-export function Spinner({ label }: { label?: string }) {
-  return (
-    <div className="flex items-center gap-2 text-sm text-slate-500">
-      <span
-        aria-hidden
-        className="size-4 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-600"
-      />
-      {label ?? "Loading…"}
-    </div>
-  );
-}
-
 export function LoadingBlock({ lines = 3, className = "" }: { lines?: number; className?: string }) {
   return (
     <div className={`space-y-3 ${className}`} role="status" aria-label="Loading">
@@ -88,14 +76,6 @@ export function ErrorState({
 export function InlineError({ message }: { message: string }) {
   return (
     <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-      {message}
-    </p>
-  );
-}
-
-export function SuccessNote({ message }: { message: string }) {
-  return (
-    <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
       {message}
     </p>
   );
