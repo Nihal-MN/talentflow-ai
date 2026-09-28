@@ -15,12 +15,11 @@ from __future__ import annotations
 import os
 
 import pytest
+from app.ai.embeddings import HashEmbeddingProvider
+from app.models.embedding import EMBEDDING_DIM, EmbeddingRecord, EmbeddingVector, vector_to_literal
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import bindparam, cast, select
 from sqlalchemy.dialects import postgresql
-
-from app.ai.embeddings import HashEmbeddingProvider
-from app.models.embedding import EMBEDDING_DIM, EmbeddingRecord, EmbeddingVector, vector_to_literal
 
 PG_URL = os.environ.get("DATABASE_URL", "")
 needs_postgres = pytest.mark.skipif(
@@ -72,11 +71,10 @@ def test_similarity_search_compiles_to_pgvector_operator_sql():
 def test_pgvector_roundtrip_and_ranked_search():
     from alembic import command
     from alembic.config import Config
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-
     from app.core.config import get_settings
     from app.services import embeddings_store
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
 
     get_settings.cache_clear()  # let alembic/env.py see this DATABASE_URL
     try:
