@@ -3,7 +3,7 @@
 **Open-source AI-native hiring pipeline with structured talent data, explainable candidate matching, semantic search and recruiter-in-the-loop workflows.**
 
 [![CI](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml)
-![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-94_passing_on_PostgreSQL-brightgreen)
+![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-95_passing_on_PostgreSQL-brightgreen)
 ![Frontend tests: 18 passing](https://img.shields.io/badge/frontend_tests-18_passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
@@ -118,7 +118,7 @@ a contract, not marketing.
 | Database | PostgreSQL 16 + pgvector (HNSW cosine index) · SQLite fallback for dev/tests |
 | AI | OpenAI Responses API (structured outputs) + deterministic mock; embeddings 1536-dim |
 | Infra | Docker + Docker Compose (any Docker daemon — Desktop, Colima, remote) |
-| Quality | pytest (94 tests, 91% coverage) · vitest + Testing Library (18 tests) · ruff · ESLint · strict tsc · GitHub Actions |
+| Quality | pytest (95 tests, 91% coverage) · vitest + Testing Library (18 tests) · ruff · ESLint · strict tsc · GitHub Actions |
 
 ## Quick start
 
@@ -192,11 +192,11 @@ states the active mode explicitly.
 ```bash
 make test                                  # everything below, one command
 
-cd backend && uv run pytest                # 93 passed + 1 skipped (SQLite run)
+cd backend && uv run pytest                # 94 passed + 1 skipped (SQLite run)
 cd backend && uv run ruff check app tests  # lint
 # with the Docker database running — nothing skips:
 cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
-  uv run pytest                            # 94 passed
+  uv run pytest                            # 95 passed
 
 cd frontend && npm test && npm run typecheck   # 18 passed + strict TS
 ```
@@ -222,7 +222,7 @@ talentflow-ai/
 │   │   │               normalization, documents, embeddings_store, skills
 │   │   └── seed/       synthetic dataset + `python -m app.seed`
 │   ├── alembic/        migrations (PostgreSQL + SQLite)
-│   └── tests/          94 tests
+│   └── tests/          95 tests
 ├── frontend/           Next.js app (9 pages + typed client + UI kit)
 ├── docs/               ADRs, screenshots, deep dives
 ├── examples/           synthetic JDs + resume files (PDF/DOCX/TXT)

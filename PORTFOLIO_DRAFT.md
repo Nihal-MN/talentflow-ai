@@ -34,7 +34,7 @@ It ingests job descriptions and resumes (PDF/DOCX/TXT) into validated
 structured data using LLM structured outputs (with a deterministic keyless
 mock mode), evaluates candidates requirement-by-requirement with quoted
 evidence and a published scoring formula, and manages a hiring pipeline with
-notes, tags and AI-assisted screening questions. 94 backend tests (91%
+notes, tags and AI-assisted screening questions. 95 backend tests (91%
 coverage) + 18 frontend tests, CI against a real PostgreSQL+pgvector service,
 Responsible-AI constraints enforced in code.
 
@@ -45,7 +45,7 @@ Responsible-AI constraints enforced in code.
   LLM structured outputs validated before persistence, explainable
   requirement-level candidate matching with quoted resume evidence, and a
   full hiring pipeline — verified end-to-end in a browser-automated
-  walkthrough and 112 automated tests.
+  walkthrough and 113 automated tests.
 - Implemented a deterministic-first, explainable matching engine that replaces
   opaque AI scores with per-requirement verdicts (met/partial/missing),
   published scoring weights and source-quoted evidence; shipped a provider
@@ -78,7 +78,7 @@ Responsible-AI constraints enforced in code.
 > questions; a health page keeps the platform honest.
 >
 > Built with FastAPI, Next.js/TypeScript, PostgreSQL + pgvector (semantic
-> search), Docker Compose, and 112 automated tests — including a structural
+> search), Docker Compose, and 113 automated tests — including a structural
 > guard that no protected-attribute data can exist anywhere in the system.
 > The human always makes the decision.
 >
@@ -110,7 +110,7 @@ Responsible-AI constraints enforced in code.
 > not a policy.)
 >
 > Stack: FastAPI · Next.js/TypeScript · PostgreSQL + pgvector · Docker.
-> 112 tests, CI on GitHub Actions. Feedback very welcome.
+> 113 tests, CI on GitHub Actions. Feedback very welcome.
 >
 > → [repo link] · [optional: 30-sec screen recording]
 
@@ -139,8 +139,8 @@ Responsible-AI constraints enforced in code.
 
 ## Verification notes for future-you
 
-* Numbers used above (94 backend / 18 frontend tests, 91% coverage, 4 jobs /
-  10 candidates demo, 112 total tests) reflect the audited state at commit
+* Numbers used above (95 backend / 18 frontend tests, 91% coverage, 4 jobs /
+  10 candidates demo, 113 total tests) reflect the audited state at commit
   `e6e0005`. If you change the code, recompute before posting.
 * The OpenAI path is wired and contract-tested but was not run against the
   live API in the build environment. If you demo with a real key before

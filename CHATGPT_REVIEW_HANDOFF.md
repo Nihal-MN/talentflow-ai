@@ -35,7 +35,7 @@ talentflow-ai/
 │   │   └── seed/             demo_jobs.py, demo_candidates*.py,
 │   │                         generate_files.py, run_seed.py
 │   ├── alembic/versions/     3dc9b96a8fcf_initial_schema.py (single migration)
-│   ├── tests/                12 test modules, 94 tests
+│   ├── tests/                12 test modules, 95 tests
 │   ├── scripts/smoke_api.py  human-readable end-to-end script
 │   ├── pyproject.toml + uv.lock, Dockerfile, docker-entrypoint.sh
 ├── frontend/                 Next.js 16 (App Router) / React 19 / TS
@@ -323,7 +323,7 @@ POST /jobs/upload     (multipart file)            ─┴→ same path after extr
   + `AI_PROVIDER=mock` + empty key, builds a shared in-memory DB with FK
   pragmas on, overrides `get_db` and both provider dependencies, and wipes all
   tables between tests. No network, no keys, no shared state.
-- **Comprehensive**: 12 modules / 94 tests — health, jobs (extraction quality
+- **Comprehensive**: 12 modules / 95 tests — health, jobs (extraction quality
   assertions), candidates (PDF/DOCX/TXT ingestion, notes, tags, error paths),
   documents (encodings, corrupt PDFs, caps), mock extraction (section
   detection, boundary precision, determinism), normalization, skill taxonomy,
@@ -395,9 +395,9 @@ Native alternative: `make setup && make seed-native && make dev`
 
 ```bash
 make test                                            # backend + frontend
-cd backend && uv run pytest                          # 93 passed, 1 skipped (SQLite)
+cd backend && uv run pytest                          # 94 passed, 1 skipped (SQLite)
 cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
-  uv run pytest                                       # 94 passed, 0 skipped
+  uv run pytest                                       # 95 passed, 0 skipped
 cd backend && uv run ruff check app tests
 cd frontend && npm test && npm run typecheck && npm run lint && npm run build
 cd backend && uv run python scripts/smoke_api.py     # end-to-end in-process script
@@ -441,8 +441,8 @@ auth, then CSV export, then reranking evaluation.
 ## 25. Test results (actual, 28 Sep 2026)
 
 ```text
-Backend (SQLite, hermetic):   93 passed, 1 skipped in 1.55s
-Backend (PostgreSQL+pgvector): 94 passed in 1.95s   ← Docker db running
+Backend (SQLite, hermetic):   94 passed, 1 skipped in 1.65s
+Backend (PostgreSQL+pgvector): 95 passed in 1.67s   ← Docker db running
 Coverage:                      91% (2851 stmts, 253 missed)
 Frontend:                      18 passed (3 files)
 Lint:                          ruff clean; eslint clean; tsc --noEmit clean

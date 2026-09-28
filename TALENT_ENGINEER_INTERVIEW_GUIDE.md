@@ -329,7 +329,7 @@ the interview.
 
 - **What it is:** executable verification — unit, API/integration, and
   end-to-end layers.
-- **Why TalentFlow has 94 backend + 18 frontend tests (91% coverage):** the
+- **Why TalentFlow has 95 backend + 18 frontend tests (91% coverage):** the
   product's core claims are behavioral — "evidence quotes real text",
   "related skills can't become met", "no protected columns exist", "stage
   moves always audit". Those are tests, not promises. The suite is hermetic
@@ -372,7 +372,7 @@ the interview.
 > matching engine: rather than an opaque AI score, it evaluates every
 > requirement individually — met, partial, missing — and shows quoted
 > evidence from the candidate's own resume with a fully published scoring
-> formula. I tested the claims that matter: 94 backend tests including a real
+> formula. I tested the claims that matter: 95 backend tests including a real
 > pgvector integration test against PostgreSQL, a structural test that no
 > protected-attribute field can ever exist in the schema, and an
 > end-to-end browser run of the whole hiring workflow. It's the tool I

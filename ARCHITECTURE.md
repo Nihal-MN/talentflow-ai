@@ -214,7 +214,7 @@ codebase knows which database is in use.
 ## 8. Testing strategy
 
 See `TESTING.md` for the full matrix. Shape of it (final audit numbers,
-28 Sep 2026: **94/94 backend tests pass against PostgreSQL, 93 pass + 1
+28 Sep 2026: **95/95 backend tests pass against PostgreSQL, 94 pass + 1
 integration on SQLite, 18/18 frontend, coverage 91%**):
 
 * unit: skill taxonomy, normalization, mock extraction, matching guarantees,
