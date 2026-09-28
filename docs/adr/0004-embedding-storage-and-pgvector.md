@@ -17,7 +17,11 @@ against the same schema managed by the same migrations.
 - The `embedding` column is **`vector(1536)` on PostgreSQL** (pgvector
   extension created in the migration, HNSW index with `vector_cosine_ops`) and
   a JSON-encoded `TEXT` column on SQLite. A `TypeDecorator`
-  (`app/models/embedding.py`) handles serialization per dialect.
+  (`app/models/embedding.py`) handles serialization per dialect: inserts bind
+  the raw list on PostgreSQL (the pgvector type formats the wire value) and
+  JSON text on SQLite; raw-SQL similarity comparisons bind literal text with an
+  explicit `CAST(:vec AS vector)` — all verified against a live PostgreSQL
+  server by the integration test in CI.
 - Both the OpenAI embedding model (`text-embedding-3-small`) and the
   deterministic mock embedder emit **1536-dim** vectors, so the column
   dimension never changes across modes.

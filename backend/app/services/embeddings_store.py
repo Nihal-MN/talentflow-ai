@@ -13,7 +13,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from sqlalchemy import bindparam, cast, delete, select
+from sqlalchemy import Float, bindparam, cast, delete, select, type_coerce
 from sqlalchemy.orm import Session
 
 from app.ai.base import EmbeddingProvider
@@ -136,7 +136,13 @@ def search_similar(
         from pgvector.sqlalchemy import Vector
 
         vector_param = bindparam("query_vector", value=vector_to_literal(query_vector))
-        distance = EmbeddingRecord.embedding.op("<=>")(cast(vector_param, Vector(EMBEDDING_DIM)))
+        # The <=> operator expression would otherwise inherit the *vector*
+        # column's result type; type_coerce tells SQLAlchemy this yields a
+        # plain float distance (SQL unchanged, result processing correct).
+        distance = type_coerce(
+            EmbeddingRecord.embedding.op("<=>")(cast(vector_param, Vector(EMBEDDING_DIM))),
+            Float,
+        )
         rows = db.execute(
             select(EmbeddingRecord, distance.label("distance"))
             .where(*conditions)

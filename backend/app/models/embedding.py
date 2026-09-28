@@ -6,8 +6,9 @@ on SQLite (dev/tests) it degrades to JSON-encoded text and similarity is
 computed in-process. All dialect handling is quarantined here and in
 ``app/services/embeddings_store.py`` — see docs/adr/0004.
 
-Values are sent as text (``'[1.0,2.0,...]'``) and cast explicitly in SQL, so
-the column works with or without the pgvector psycopg adapter registered.
+Inserts bind the raw list and let the pgvector type serialize it; raw-SQL
+similarity comparisons bind literal text with an explicit ``CAST``. Both
+directions are verified against a real PostgreSQL server in CI.
 """
 
 from __future__ import annotations
@@ -26,7 +27,19 @@ EMBEDDING_DIM = DEFAULT_EMBEDDING_DIM
 
 
 class EmbeddingVector(TypeDecorator):
-    """``vector(1536)`` on PostgreSQL; JSON-encoded TEXT elsewhere."""
+    """``vector(1536)`` on PostgreSQL; JSON-encoded TEXT elsewhere.
+
+    Serialization rules per dialect:
+
+    * PostgreSQL — **bind**: pass the raw list through; the pgvector
+      ``Vector`` impl type formats it for the wire. **result**: parse the
+      numpy array / list / text form coming back from the driver.
+    * SQLite — JSON-encoded text in both directions.
+
+    Raw-SQL similarity comparisons bind the vector as a literal text parameter
+    (``vector_to_literal``) with an explicit ``CAST(:vec AS vector)`` — see
+    ``app/services/embeddings_store.py``.
+    """
 
     impl = Text
     cache_ok = True
@@ -41,19 +54,18 @@ class EmbeddingVector(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if value is None:
             return None
-        encoded = json.dumps([float(x) for x in value])
+        floats = [float(x) for x in value]
         if dialect.name == "postgresql":
-            # A plain text parameter is coerced by PostgreSQL into the vector
-            # column type via its input function.
-            return encoded
-        return encoded
+            # pgvector's Vector type serializes lists itself; it rejects text.
+            return floats
+        return json.dumps(floats)
 
     def process_result_value(self, value, dialect):
         if value is None:
             return None
         if isinstance(value, str):
             return [float(x) for x in json.loads(value)]
-        return [float(x) for x in value]  # list or ndarray from a vector adapter
+        return [float(x) for x in value]  # list or ndarray from the driver
 
 
 class EmbeddingRecord(Base, TimestampMixin):

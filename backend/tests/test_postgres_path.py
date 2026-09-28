@@ -31,15 +31,25 @@ needs_postgres = pytest.mark.skipif(
 # ── Dialect-level checks (no server needed) ─────────────────────────────────
 
 
-def test_embedding_type_serializes_as_text_for_postgres():
+def test_embedding_type_binds_lists_on_postgres_and_text_on_sqlite():
+    from sqlalchemy.dialects import sqlite as sqlite_module
+
+    lite = sqlite_module.dialect()
     pg = postgresql.dialect()
     column_type = EmbeddingVector()
 
-    bound = column_type.process_bind_param([0.1, 0.2, 0.3], pg)
-    assert isinstance(bound, str) and bound.startswith("[") and bound.endswith("]")
+    # PostgreSQL: hand the raw list to the pgvector impl type (it formats the
+    # wire representation itself and *rejects* text — verified against a real
+    # server in the integration test below).
+    bound_pg = column_type.process_bind_param([0.1, 0.2, 0.3], pg)
+    assert bound_pg == [0.1, 0.2, 0.3]
 
-    # PostgreSQL returns vector values as text for us — or as a list when a
-    # driver adapter is present; both must parse back to floats.
+    # SQLite: JSON-encoded text round-trips.
+    bound_sqlite = column_type.process_bind_param([0.1, 0.2, 0.3], lite)
+    assert isinstance(bound_sqlite, str)
+    assert column_type.process_result_value(bound_sqlite, lite) == [0.1, 0.2, 0.3]
+
+    # Results parse from text, lists and ndarrays alike.
     assert column_type.process_result_value("[0.1,0.2,0.3]", pg) == [0.1, 0.2, 0.3]
     assert column_type.process_result_value([0.4, 0.5], pg) == [0.4, 0.5]
 

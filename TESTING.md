@@ -7,8 +7,10 @@ make test              # backend + frontend in one go
 
 # backend (pytest + coverage)
 cd backend
-uv run pytest                              # 93 tests + 1 pg-vector integration test (skipped without PG)
-uv run pytest --cov=app --cov-report=term  # coverage report (currently 91%)
+uv run pytest                              # 94 tests on SQLite (the pgvector integration test skips)
+DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
+  uv run pytest                            # 94/94 — with the Docker db running, nothing skips
+uv run pytest --cov=app --cov-report=term  # coverage report (91%)
 uv run python scripts/smoke_api.py         # end-to-end flow — human-readable output
 
 # frontend (vitest + strict TS)

@@ -91,6 +91,10 @@ docker compose up --build -d    # builds api + web + db
 docker compose exec api python -m app.seed   # load the synthetic demo dataset
 ```
 
+> Works with **any Docker daemon** — Docker Desktop, [Colima](https://github.com/abiosoft/colima)
+> (fully CLI, no license gate), or a remote daemon. The compose stack was
+> verified end-to-end against Colima + the `pgvector/pgvector:pg16` image.
+
 Open **http://localhost:3000** (UI) and **http://localhost:8000/docs** (API).
 No OpenAI key needed — the default is deterministic mock mode.
 
