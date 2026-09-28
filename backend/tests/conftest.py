@@ -10,9 +10,10 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# Must be set before the application modules are imported.
-os.environ["DATABASE_URL"] = "sqlite://"
-os.environ["AI_PROVIDER"] = "mock"
+# Must be set before the application modules are imported (CI may legitimately
+# override DATABASE_URL to exercise the PostgreSQL path).
+os.environ.setdefault("DATABASE_URL", "sqlite://")
+os.environ.setdefault("AI_PROVIDER", "mock")
 os.environ["OPENAI_API_KEY"] = ""
 
 import app.models  # noqa: F401  (register all tables)

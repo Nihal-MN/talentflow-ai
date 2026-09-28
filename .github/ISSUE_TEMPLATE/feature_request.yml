@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What recruiting/engineering problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Sketch the approach. Keep the explainability contract in mind (see RESPONSIBLE_AI.md).
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: This keeps matching results explainable (no opaque scores)
+          required: true
+        - label: This does not introduce protected-characteristic signals
+          required: true

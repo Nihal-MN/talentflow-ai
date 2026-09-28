@@ -1,0 +1,35 @@
+name: Bug report
+description: Something broke or behaves incorrectly
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact steps and any error messages (never paste real candidate data).
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend API
+        - Frontend UI
+        - Matching engine
+        - Ingestion / extraction
+        - Docker / setup
+        - Docs
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, how you ran it (docker compose / native), AI mode (mock/openai)
+    validations:
+      required: true

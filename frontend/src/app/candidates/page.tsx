@@ -26,10 +26,14 @@ export default function CandidatesPage() {
   const uploadId = useRef(0);
 
   const handleFiles = useCallback(
-    async (files: FileList | null) => {
-      if (!files || files.length === 0) return;
+    async (fileList: FileList | null) => {
+      if (!fileList || fileList.length === 0) return;
+      // Snapshot the files NOW: the input is cleared right after the change
+      // event, which empties the live FileList and would otherwise silently
+      // drop every file after the first one.
+      const files = Array.from(fileList);
       setUploadError(null);
-      const items: UploadItem[] = Array.from(files).map((file) => ({
+      const items: UploadItem[] = files.map((file) => ({
         id: ++uploadId.current,
         name: file.name,
         state: "uploading" as const,

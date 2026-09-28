@@ -39,13 +39,13 @@ export function StageControls({
 
   return (
     <div className={compact ? "flex flex-wrap items-center gap-2" : "space-y-2"}>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5">
         <select
           aria-label="Move to stage"
           value={stage}
           disabled={busy}
           onChange={(event) => move(event.target.value as Stage)}
-          className="rounded-lg border-0 bg-white px-2.5 py-1.5 text-xs shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-600"
+          className={`rounded-lg border-0 bg-white ${compact ? "px-2 py-1 text-[11px]" : "px-2.5 py-1.5 text-xs"} shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-600`}
         >
           {STAGES.map((option) => (
             <option key={option} value={option}>
