@@ -2,7 +2,7 @@
 
 **Open-source AI-native hiring pipeline with structured talent data, explainable candidate matching, semantic search and recruiter-in-the-loop workflows.**
 
-[![CI](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/talentflow-ai/actions/workflows/ci.yml)
+[![CI](https://github.com/Nihal-MN/talentflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Nihal-MN/talentflow-ai/actions/workflows/ci.yml)
 ![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-95_passing_on_PostgreSQL-brightgreen)
 ![Frontend tests: 18 passing](https://img.shields.io/badge/frontend_tests-18_passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
