@@ -151,10 +151,20 @@ def test_alembic_migrations_apply_and_downgrade(tmp_path: Path, monkeypatch):
         tables = set(inspect(engine).get_table_names())
         engine.dispose()
         expected = {
-            "candidates", "candidate_experiences", "candidate_educations", "candidate_skills",
-            "candidate_certifications", "jobs", "job_requirements", "applications",
-            "pipeline_stage_events", "candidate_notes", "tags", "candidate_tags",
-            "screening_questions", "embedding_records",
+            "candidates",
+            "candidate_experiences",
+            "candidate_educations",
+            "candidate_skills",
+            "candidate_certifications",
+            "jobs",
+            "job_requirements",
+            "applications",
+            "pipeline_stage_events",
+            "candidate_notes",
+            "tags",
+            "candidate_tags",
+            "screening_questions",
+            "embedding_records",
         }
         assert expected <= tables
 

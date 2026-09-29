@@ -64,13 +64,17 @@ def test_stage_move_rejects_unknown_stage(client, fullstack_job, amira):
 
 def test_board_groups_by_stage(client, fullstack_job, amira):
     application = _add_to_pipeline(client, amira["id"], fullstack_job["id"])
-    client.patch(
-        f"/api/v1/applications/{application['id']}/stage", json={"to_stage": "INTERVIEW"}
-    )
+    client.patch(f"/api/v1/applications/{application['id']}/stage", json={"to_stage": "INTERVIEW"})
 
     board = client.get("/api/v1/applications/board").json()
     assert set(board) == {
-        "NEW", "SCREENING", "SHORTLISTED", "INTERVIEW", "OFFER", "HIRED", "REJECTED",
+        "NEW",
+        "SCREENING",
+        "SHORTLISTED",
+        "INTERVIEW",
+        "OFFER",
+        "HIRED",
+        "REJECTED",
     }
     assert len(board["INTERVIEW"]) == 1
     assert board["INTERVIEW"][0]["candidate"]["full_name"] == "Amira Haddad"
@@ -79,9 +83,7 @@ def test_board_groups_by_stage(client, fullstack_job, amira):
 
 def test_activity_feed_returns_latest_first(client, fullstack_job, amira):
     application = _add_to_pipeline(client, amira["id"], fullstack_job["id"])
-    client.patch(
-        f"/api/v1/applications/{application['id']}/stage", json={"to_stage": "SCREENING"}
-    )
+    client.patch(f"/api/v1/applications/{application['id']}/stage", json={"to_stage": "SCREENING"})
     activity = client.get("/api/v1/applications/activity").json()
     assert len(activity) == 2
     assert activity[0]["to_stage"] == "SCREENING"
@@ -95,9 +97,7 @@ def test_list_applications_filters(client, fullstack_job, amira):
     by_job = client.get("/api/v1/applications", params={"job_id": fullstack_job["id"]}).json()
     assert len(by_job) == 1
 
-    by_candidate = client.get(
-        "/api/v1/applications", params={"candidate_id": amira["id"]}
-    ).json()
+    by_candidate = client.get("/api/v1/applications", params={"candidate_id": amira["id"]}).json()
     assert len(by_candidate) == 1
 
     empty = client.get("/api/v1/applications", params={"stage": "HIRED"}).json()

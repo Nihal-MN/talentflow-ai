@@ -110,9 +110,7 @@ def test_notes_lifecycle(client, amira):
     detail = client.get(f"/api/v1/candidates/{candidate_id}").json()
     assert [n["id"] for n in detail["notes"]] == [note["id"]]
 
-    assert (
-        client.delete(f"/api/v1/candidates/{candidate_id}/notes/{note['id']}").status_code == 204
-    )
+    assert client.delete(f"/api/v1/candidates/{candidate_id}/notes/{note['id']}").status_code == 204
     assert client.get(f"/api/v1/candidates/{candidate_id}").json()["notes"] == []
 
 
@@ -126,7 +124,9 @@ def test_note_validation_errors(client, amira):
 
 def test_tags_are_created_reused_and_detached(client, amira):
     candidate_id = amira["id"]
-    response = client.post(f"/api/v1/candidates/{candidate_id}/tags", json={"name": "Top-Match", "color": "emerald"})
+    response = client.post(
+        f"/api/v1/candidates/{candidate_id}/tags", json={"name": "Top-Match", "color": "emerald"}
+    )
     assert response.status_code == 201
     tag = response.json()
     assert tag["name"] == "top-match"  # normalized to lowercase
@@ -140,9 +140,10 @@ def test_tags_are_created_reused_and_detached(client, amira):
     assert usage[0]["usage_count"] == 1
 
     assert client.delete(f"/api/v1/candidates/{candidate_id}/tags/{tag['id']}").status_code == 204
-    assert client.get(f"/api/v1/candidates/{candidate_id}").json() == client.get(
-        f"/api/v1/candidates/{candidate_id}"
-    ).json()  # stable read after detach
+    assert (
+        client.get(f"/api/v1/candidates/{candidate_id}").json()
+        == client.get(f"/api/v1/candidates/{candidate_id}").json()
+    )  # stable read after detach
     assert client.get("/api/v1/tags").json()[0]["usage_count"] == 0
 
     # Removing a tag that is not attached -> 404

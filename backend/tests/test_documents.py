@@ -9,14 +9,18 @@ from tests.conftest import resume_path
 
 
 def test_extract_text_from_pdf():
-    text = extract_text("amira_haddad.resume.pdf", resume_path("amira_haddad.resume.pdf").read_bytes())
+    text = extract_text(
+        "amira_haddad.resume.pdf", resume_path("amira_haddad.resume.pdf").read_bytes()
+    )
     assert "Amira Haddad" in text
     assert "Cedar Freight" in text
     assert "FastAPI" in text
 
 
 def test_extract_text_from_docx():
-    text = extract_text("daniel_okafor.resume.docx", resume_path("daniel_okafor.resume.docx").read_bytes())
+    text = extract_text(
+        "daniel_okafor.resume.docx", resume_path("daniel_okafor.resume.docx").read_bytes()
+    )
     assert "Daniel Okafor" in text
     assert "Paystream Africa" in text
 

@@ -76,12 +76,26 @@ def test_normalize_candidate_dedupes_and_validates():
         email="JANE@Example.com",
         years_experience=200.0,  # absurd → dropped
         experiences=[
-            ExtractedExperience(company="A", title="Dev", start_date=date(2024, 6, 1), end_date=date(2021, 1, 1), is_current=True),
-            ExtractedExperience(company="A", title="Dev", start_date=date(2024, 6, 1), end_date=date(2021, 1, 1), is_current=True),  # dupe
+            ExtractedExperience(
+                company="A",
+                title="Dev",
+                start_date=date(2024, 6, 1),
+                end_date=date(2021, 1, 1),
+                is_current=True,
+            ),
+            ExtractedExperience(
+                company="A",
+                title="Dev",
+                start_date=date(2024, 6, 1),
+                end_date=date(2021, 1, 1),
+                is_current=True,
+            ),  # dupe
         ],
         skills=[
             ExtractedSkill(name="JS", normalized_name="js", category="language"),
-            ExtractedSkill(name="JavaScript", normalized_name="javascript", category="language"),  # dupe after canonicalization
+            ExtractedSkill(
+                name="JavaScript", normalized_name="javascript", category="language"
+            ),  # dupe after canonicalization
             ExtractedSkill(name="", normalized_name="", category="other"),  # noise → dropped
         ],
     )
@@ -104,10 +118,18 @@ def test_normalize_job_validates_kinds_and_dedupes():
         employment_type="FULL_TIME",
         seniority="MID",
         requirements=[
-            ExtractedRequirement(kind="bogus", category="skill", label="SQL", normalized_skill="SQL"),
-            ExtractedRequirement(kind="must_have", category="skill", label="SQL again", normalized_skill="sql"),  # dupe
-            ExtractedRequirement(kind="preferred", category="wrong", label=" ", normalized_skill=None),  # empty label → dropped
-            ExtractedRequirement(kind="preferred", category="experience", label="3+ years", min_years=99.0),  # clamped
+            ExtractedRequirement(
+                kind="bogus", category="skill", label="SQL", normalized_skill="SQL"
+            ),
+            ExtractedRequirement(
+                kind="must_have", category="skill", label="SQL again", normalized_skill="sql"
+            ),  # dupe
+            ExtractedRequirement(
+                kind="preferred", category="wrong", label=" ", normalized_skill=None
+            ),  # empty label → dropped
+            ExtractedRequirement(
+                kind="preferred", category="experience", label="3+ years", min_years=99.0
+            ),  # clamped
         ],
     )
     cleaned = normalize_job(extracted)

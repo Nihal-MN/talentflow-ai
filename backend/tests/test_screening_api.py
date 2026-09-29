@@ -47,26 +47,23 @@ def test_gap_probes_appear_for_missing_must_haves(client, fullstack_job):
     elena = _upload(client, "elena_vasquez.resume.pdf")
     application = _pipeline(client, elena["id"], fullstack_job["id"])
 
-    questions = client.post(
-        f"/api/v1/screening/applications/{application['id']}/generate"
-    ).json()
+    questions = client.post(f"/api/v1/screening/applications/{application['id']}/generate").json()
     gap_probes = [q for q in questions if q["category"] == "gap_probe"]
     assert gap_probes, "expected gap probes for missing must-have skills"
-    assert any("ramp" in q["question"].lower() or "come up to speed" in q["question"].lower() for q in gap_probes)
+    assert any(
+        "ramp" in q["question"].lower() or "come up to speed" in q["question"].lower()
+        for q in gap_probes
+    )
 
 
 def test_questions_persist_and_regenerate_replaces_set(client, fullstack_job, amira):
     application = _pipeline(client, amira["id"], fullstack_job["id"])
-    first = client.post(
-        f"/api/v1/screening/applications/{application['id']}/generate"
-    ).json()
+    first = client.post(f"/api/v1/screening/applications/{application['id']}/generate").json()
 
     stored = client.get(f"/api/v1/screening/applications/{application['id']}").json()
     assert [q["id"] for q in stored] == [q["id"] for q in first]
 
-    second = client.post(
-        f"/api/v1/screening/applications/{application['id']}/generate"
-    ).json()
+    second = client.post(f"/api/v1/screening/applications/{application['id']}/generate").json()
     assert len(second) == len(first)
 
     # Regeneration replaces the set rather than appending to it.

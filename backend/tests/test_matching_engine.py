@@ -132,7 +132,10 @@ def test_skill_missing(db_session):
 def test_experience_met_partial_missing_and_unknown(db_session):
     def run(min_years, years):
         candidate = make_candidate(db_session, name=f"c{min_years}-{years}", years_experience=years)
-        job = make_job(db_session, [{"category": "experience", "min_years": min_years, "label": f"{min_years}+ yrs"}])
+        job = make_job(
+            db_session,
+            [{"category": "experience", "min_years": min_years, "label": f"{min_years}+ yrs"}],
+        )
         return evaluate(db_session, candidate, job).requirements[0]
 
     assert run(5, 8).status == "met"
@@ -156,12 +159,19 @@ def test_experience_without_min_years_is_not_auto_scored(db_session):
 
 def test_education_statuses(db_session):
     with_degree = make_candidate(
-        db_session, educations=[{"degree": "BSc Computer Science", "institution": "Tech University"}]
+        db_session,
+        educations=[{"degree": "BSc Computer Science", "institution": "Tech University"}],
     )
     without = make_candidate(db_session, name="NoEdu")
     job = make_job(
         db_session,
-        [{"category": "education", "label": "Bachelor's degree in Computer Science", "keywords": "bachelor"}],
+        [
+            {
+                "category": "education",
+                "label": "Bachelor's degree in Computer Science",
+                "keywords": "bachelor",
+            }
+        ],
     )
 
     assert evaluate(db_session, with_degree, job).requirements[0].status == "met"
@@ -193,7 +203,13 @@ def test_domain_evaluated_from_evidence(db_session):
     )
     job = make_job(
         db_session,
-        [{"category": "domain", "label": "Experience in logistics", "keywords": "logistics,freight"}],
+        [
+            {
+                "category": "domain",
+                "label": "Experience in logistics",
+                "keywords": "logistics,freight",
+            }
+        ],
     )
     evaluation = evaluate(db_session, candidate, job).requirements[0]
     assert evaluation.status == "met"
@@ -212,7 +228,9 @@ def test_soft_requirements_are_advisory_and_not_scored(db_session):
             {"category": "other", "label": "Strong ownership mindset"},
         ],
     )
-    candidate.skills.append(CandidateSkill(name="python", normalized_name="python", category="language"))
+    candidate.skills.append(
+        CandidateSkill(name="python", normalized_name="python", category="language")
+    )
     db_session.commit()
 
     result = evaluate(db_session, candidate, job)
@@ -238,7 +256,11 @@ def test_composite_formula_and_weight_renormalization(db_session):
             {"category": "skill", "skill": "python"},  # met
             {"category": "skill", "skill": "react"},  # met
             {"category": "skill", "skill": "aws"},  # missing
-            {"kind": "preferred", "category": "skill", "skill": "react"},  # duplicate → deduped upstream
+            {
+                "kind": "preferred",
+                "category": "skill",
+                "skill": "react",
+            },  # duplicate → deduped upstream
         ],
         domain=None,
     )
@@ -316,9 +338,22 @@ def test_no_protected_attribute_columns_exist_anywhere():
     from app.db.base import Base
 
     banned = {
-        "age", "date_of_birth", "dob", "gender", "sex", "ethnicity", "race",
-        "nationality", "religion", "marital_status", "disability", "photo",
-        "photo_url", "avatar", "national_id", "family_status",
+        "age",
+        "date_of_birth",
+        "dob",
+        "gender",
+        "sex",
+        "ethnicity",
+        "race",
+        "nationality",
+        "religion",
+        "marital_status",
+        "disability",
+        "photo",
+        "photo_url",
+        "avatar",
+        "national_id",
+        "family_status",
     }
     for table in Base.metadata.sorted_tables:
         overlap = {column.name for column in table.columns if column.name.lower() in banned}
@@ -341,8 +376,19 @@ def test_experience_years_computed_from_dates_not_claims(db_session):
         db_session,
         name="Dated",
         roles=[
-            {"title": "Engineer", "company": "A", "start": date(2018, 1, 1), "end": date(2021, 1, 1)},
-            {"title": "Engineer", "company": "B", "start": date(2021, 1, 1), "end": None, "current": True},
+            {
+                "title": "Engineer",
+                "company": "A",
+                "start": date(2018, 1, 1),
+                "end": date(2021, 1, 1),
+            },
+            {
+                "title": "Engineer",
+                "company": "B",
+                "start": date(2021, 1, 1),
+                "end": None,
+                "current": True,
+            },
         ],
     )
     job = make_job(db_session, [{"category": "experience", "min_years": 5, "label": "5+ years"}])

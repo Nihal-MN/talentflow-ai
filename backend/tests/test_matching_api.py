@@ -16,9 +16,9 @@ def _upload(client, filename: str) -> dict:
 
 
 def test_rank_candidates_for_job_orders_and_explains(client, fullstack_job):
-    amira = _upload(client, "amira_haddad.resume.pdf")       # strong match
-    _upload(client, "elena_vasquez.resume.pdf")            # frontend-only
-    _upload(client, "chen_wei.resume.docx")                   # backend/platform
+    amira = _upload(client, "amira_haddad.resume.pdf")  # strong match
+    _upload(client, "elena_vasquez.resume.pdf")  # frontend-only
+    _upload(client, "chen_wei.resume.docx")  # backend/platform
 
     response = client.get(f"/api/v1/matching/job/{fullstack_job['id']}")
     assert response.status_code == 200

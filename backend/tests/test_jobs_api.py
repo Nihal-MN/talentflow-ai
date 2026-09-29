@@ -10,7 +10,11 @@ FULLSTACK_JD = DEMO_JOBS["senior-full-stack-engineer"]["text"]
 def test_create_job_extracts_structured_requirements(client):
     response = client.post(
         "/api/v1/jobs",
-        json={"title": "Senior Full Stack Engineer", "company": "Cedar Freight", "jd_text": FULLSTACK_JD},
+        json={
+            "title": "Senior Full Stack Engineer",
+            "company": "Cedar Freight",
+            "jd_text": FULLSTACK_JD,
+        },
     )
     assert response.status_code == 201
     job = response.json()
