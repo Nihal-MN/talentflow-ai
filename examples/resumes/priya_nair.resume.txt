@@ -1,7 +1,7 @@
 Priya Nair
 Full Stack Developer
 Bengaluru, India
-priya.nair@example.com | +91 98450 55127 | linkedin.com/in/priya-nair
+priya.nair@example.com | +91 98450 55512 | linkedin.com/in/priya-nair
 
 Summary
 Full-stack developer with 3 years of experience across the React and Python ecosystems. Ships user-facing features with TypeScript on the frontend and Flask services on the backend.

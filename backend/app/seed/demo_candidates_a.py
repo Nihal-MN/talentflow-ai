@@ -121,7 +121,7 @@ CANDIDATES_A: list[dict] = [
     {
         "full_name": "Priya Nair",
         "email": "priya.nair@example.com",
-        "phone": "+91 98450 55127",
+        "phone": "+91 98450 55512",
         "location": "Bengaluru, India",
         "headline": "Full Stack Developer",
         "summary": (
