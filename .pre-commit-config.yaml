@@ -1,0 +1,13 @@
+# Optional local quality hooks — recommended, not required.
+# Install once:  pipx install pre-commit  (or: uv tool install pre-commit)
+# Then:          pre-commit install
+# Run manually:  pre-commit run --all-files
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.9
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/

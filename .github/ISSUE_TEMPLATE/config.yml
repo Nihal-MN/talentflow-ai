@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Read the docs first
+    url: https://github.com/Nihal-MN/talentflow-ai/tree/main/docs
+    about: Architecture, AI design, matching engine, API reference and testing docs.
+  - name: 🔒 Report a security vulnerability (private)
+    url: https://github.com/Nihal-MN/talentflow-ai/security/advisories/new
+    about: Please report vulnerabilities privately — never in a public issue. See SECURITY.md.

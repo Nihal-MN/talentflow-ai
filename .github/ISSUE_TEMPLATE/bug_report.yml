@@ -2,17 +2,41 @@ name: Bug report
 description: Something broke or behaves incorrectly
 labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! Please **never paste real candidate data** —
+        redact names, emails and phone numbers before submitting.
   - type: textarea
-    id: what-happened
+    id: description
     attributes:
       label: What happened?
-      description: Include the exact steps and any error messages (never paste real candidate data).
+      description: A clear description of the bug, including any error message.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps so anyone can see the same thing.
+      placeholder: |
+        1. Go to '…'
+        2. Upload '…'
+        3. See error
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: What did you expect?
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
     validations:
       required: true
   - type: dropdown
@@ -30,6 +54,20 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: OS, how you ran it (docker compose / native), AI mode (mock/openai)
+      description: OS, how you ran it (docker compose / native), AI mode (mock/openai), versions if relevant.
     validations:
       required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant log output. Redact anything personal.
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / additional context
+      description: Drag images in if they help. No real candidate data, please.
+    validations:
+      required: false
