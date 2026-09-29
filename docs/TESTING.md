@@ -53,7 +53,7 @@ affordance), StageControls behavior (advance, reject, reopen), badge labels.
 
 ## Manual acceptance workflow
 
-Executed against a live stack (screenshots in `docs/screenshots/`; the
+Executed against a live stack (screenshots in `screenshots/`; the
 sequence below is exactly what was run, including the bug it caught — see
 "Found by acceptance" at the end):
 

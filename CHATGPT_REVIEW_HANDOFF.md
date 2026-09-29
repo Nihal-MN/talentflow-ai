@@ -338,7 +338,7 @@ POST /jobs/upload     (multipart file)            ─┴→ same path after extr
   error shaping (structured errors, network failure, 204, FormData vs JSON),
   MatchCard rendering (score, formula, expandable evidence, pipeline
   affordance), StageControls behavior, badges.
-- **End-to-end**: documented manual acceptance checklist (TESTING.md) executed
+- **End-to-end**: documented manual acceptance checklist (docs/TESTING.md) executed
   against the live Docker stack with browser automation; screenshots committed.
 - **Structural guards**: no protected-attribute columns may exist
   (`test_no_protected_attribute_columns_exist_anywhere`); migrations must

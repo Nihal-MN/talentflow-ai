@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="TalentFlow AI — Explainable AI hiring pipeline. Structured talent data, semantic matching, recruiter-in-the-loop.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#16233B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#818CF8"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="6" y="634" fill="url(#accent)" opacity="0.9"/>
+  <g stroke="#1E293B" stroke-width="1" opacity="0.5">
+    <path d="M0 160 H1280 M0 320 H1280 M0 480 H1280"/>
+    <path d="M160 0 V640 M320 0 V640 M480 0 V640 M640 0 V640 M800 0 V640 M960 0 V640 M1120 0 V640"/>
+  </g>
+  <!-- centered composition -->
+  <g font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="640" y="196" font-size="76" font-weight="700" fill="#F8FAFC" letter-spacing="-1.5">TalentFlow AI</text>
+    <text x="640" y="248" font-size="30" fill="#94A3B8">Explainable AI hiring pipeline</text>
+    <g font-size="20" fill="#CBD5E1">
+      <rect x="316" y="298" rx="17" width="200" height="36" fill="#1E293B"/>
+      <text x="416" y="322">Structured talent data</text>
+      <rect x="532" y="298" rx="17" width="178" height="36" fill="#1E293B"/>
+      <text x="621" y="322">Semantic matching</text>
+      <rect x="726" y="298" rx="17" width="238" height="36" fill="#1E293B"/>
+      <text x="845" y="322">Recruiter-in-the-loop</text>
+    </g>
+    <text x="640" y="392" font-size="18" fill="#64748B">Deterministic-first matching · Quoted resume evidence · Runs without an API key</text>
+  </g>
+  <!-- match card strip -->
+  <g transform="translate(390,436)">
+    <rect width="500" height="140" rx="16" fill="#0F172A" stroke="#26344F"/>
+    <text x="28" y="42" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" fill="#94A3B8">Match · Senior Full Stack Engineer</text>
+    <text x="28" y="82" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="32" font-weight="700" fill="#F8FAFC">75.0<tspan font-size="16" fill="#64748B"> /100</tspan></text>
+    <g>
+      <rect x="28" y="98" width="444" height="9" rx="4.5" fill="#1E293B"/>
+      <rect x="28" y="98" width="333" height="9" rx="4.5" fill="#818CF8"/>
+      <rect x="28" y="115" width="444" height="9" rx="4.5" fill="#1E293B"/>
+      <rect x="28" y="115" width="222" height="9" rx="4.5" fill="#818CF8"/>
+    </g>
+    <g font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13">
+      <rect x="330" y="60" rx="11" width="74" height="26" fill="#052E22"/>
+      <text x="344" y="78" fill="#34D399">met ×7</text>
+      <rect x="412" y="60" rx="11" width="102" height="26" fill="#3F1D25"/>
+      <text x="426" y="78" fill="#FB7185">missing ×2</text>
+    </g>
+  </g>
+</svg>

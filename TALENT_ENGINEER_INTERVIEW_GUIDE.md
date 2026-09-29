@@ -336,7 +336,7 @@ the interview.
   (in-memory SQLite + mock providers, no network), so it runs anywhere,
   and the PostgreSQL integration test covers the other dialect.
 - **Where:** `backend/tests/*` (12 modules), `frontend/src/**/*.test.ts(x)`,
-  acceptance checklist in `TESTING.md`.
+  acceptance checklist in `docs/TESTING.md`.
 - **Without tests:** the explainability guarantees would be aspirational and
   the audit (which caught three real bugs) impossible.
 - **Interview line:** "I test the claims a reviewer would challenge — the

@@ -52,7 +52,7 @@ Resumes and job descriptions are hostile-by-default input.
 
 * **No authentication in the demo.** Do not expose it to the public internet
   as-is; adding authn/authz is a documented pre-deployment step (see
-  `PRODUCT.md` roadmap and ADR context). The service layer is intentionally the
+  `docs/PRODUCT.md` roadmap and ADR context). The service layer is intentionally the
   single mutation choke-point, so an auth layer can wrap it cleanly.
 * CORS is an explicit allow-list (`CORS_ORIGINS`), not `*`.
 * Request bodies are schema-validated (Pydantic) before reaching services;

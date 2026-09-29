@@ -6,6 +6,9 @@
 ![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-95_passing_on_PostgreSQL-brightgreen)
 ![Frontend tests: 18 passing](https://img.shields.io/badge/frontend_tests-18_passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
+![TalentFlow AI — an explainable AI hiring pipeline with structured talent data, semantic matching and recruiter-in-the-loop workflows](docs/assets/banner.svg)
 
 ---
 
@@ -80,7 +83,7 @@ Everything else — requirement evaluation, evidence retrieval, scoring,
 ranking, pipeline logic — is deterministic Python. Without `OPENAI_API_KEY`
 the platform runs the **mock provider** (rule-based parsers + hashed-ngram
 embeddings) and every record is labeled `extraction_method="mock"` in the API,
-database and UI. See `AI_DESIGN.md`.
+database and UI. See `docs/AI_DESIGN.md`.
 
 ## Explainable matching
 
@@ -98,7 +101,45 @@ No mysterious score. For every candidate↔job pair the engine returns:
   deterministic miss.
 
 The engine version is included in every result; the same inputs always produce
-the same output. See `ARCHITECTURE.md §4.3` and `docs/adr/0003`.
+the same output. Full specification: `docs/MATCHING.md`; context: `docs/ARCHITECTURE.md §4.3` and `docs/adr/0003`.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    R[Recruiter browser] --> W[Next.js 16 UI]
+    W -- "REST /api/v1 · typed client" --> A[FastAPI services]
+    A <--> DB[(PostgreSQL 16 + pgvector)]
+    A -- provider interface --> AI["AI layer — OpenAI Responses API<br/>(or deterministic mock)"]
+```
+
+A modular monolith: thin versioned API routes → service layer (all business
+rules) → SQLAlchemy models on PostgreSQL with pgvector; an AI provider
+interface isolates every model call behind a deterministic offline
+counterpart. Deep dives: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (with
+Mermaid diagrams), [docs/MATCHING.md](docs/MATCHING.md),
+[docs/AI_DESIGN.md](docs/AI_DESIGN.md), [docs/API.md](docs/API.md), ADRs in
+[docs/adr/](docs/adr/).
+
+## How it works
+
+1. **Create a job** — paste a JD or upload a file (PDF/DOCX/TXT). Extraction
+   turns it into structured must-have/preferred requirements (skills, years,
+   education, location, domain), schema-validated before persistence, with
+   per-record AI provenance.
+2. **Upload resumes** — each file becomes a validated candidate profile:
+   experience timeline, education, canonicalized skills (each keeping its
+   verbatim evidence line), computed years of experience.
+3. **Match** — the deterministic engine evaluates every requirement
+   (`met`/`partial`/`missing`/`unknown`), quotes the resume evidence, applies
+   related-skill partial credit and ranks candidates with a fully published
+   formula. Semantic similarity stays a supporting signal — never the verdict.
+4. **Work the pipeline** — NEW → SCREENING → SHORTLISTED → INTERVIEW → OFFER
+   → HIRED with an append-only audit trail; notes, tags and grounded
+   screening questions along the way.
+5. **Stay honest** — System Health reports the live database and AI mode;
+   mock output is labeled `mock` everywhere and never passed off as a model
+   result.
 
 ## Responsible AI
 
@@ -203,7 +244,7 @@ cd frontend && npm test && npm run typecheck   # 18 passed + strict TS
 
 Coverage: 91% backend. CI runs the same suites (against a real
 PostgreSQL+pgvector service container) plus Docker image builds — see
-`.github/workflows/ci.yml` and `TESTING.md` for the acceptance checklist and
+`.github/workflows/ci.yml` and `docs/TESTING.md` for the acceptance checklist and
 the E2E scenario.
 
 ## Project structure
@@ -224,15 +265,21 @@ talentflow-ai/
 │   ├── alembic/        migrations (PostgreSQL + SQLite)
 │   └── tests/          95 tests
 ├── frontend/           Next.js app (9 pages + typed client + UI kit)
-├── docs/               ADRs, screenshots, deep dives
+├── .github/            CI + CodeQL workflows, Dependabot, issue/PR templates
+├── docs/               architecture, AI design, matching engine, API, testing,
+│                       ADRs, maintainer guides, screenshots, banner assets
 ├── examples/           synthetic JDs + resume files (PDF/DOCX/TXT)
 └── scripts/            dev launcher
 ```
 
+Community files at the root: `LICENSE` (MIT), `CONTRIBUTING.md`,
+`CODE_OF_CONDUCT.md`, `SECURITY.md`, `CHANGELOG.md`, `ROADMAP.md`,
+`RESPONSIBLE_AI.md`.
+
 ## API overview
 
 `http://localhost:8000/docs` is the interactive reference; the full table is
-in `API.md`. Shape of it:
+in `docs/API.md`. Shape of it:
 
 | Group | Endpoints |
 |---|---|
@@ -247,12 +294,10 @@ All errors share one shape: `{"error": {"code", "message", "detail?"}}`.
 
 ## Roadmap
 
-* Authentication + multi-tenant workspaces (the service layer is the single
-  mutation choke-point, ready for an auth wrapper).
-* Interview scheduling and structured interview scorecards.
-* CSV export; ATS/email integrations.
-* Reranking evaluation harness for the OpenAI provider.
-* Next.js 16 incremental static rendering for the dashboard.
+Current / Next / Future — with explicit non-goals — in
+[ROADMAP.md](ROADMAP.md). Highlights: authentication + multi-tenant
+workspaces, pagination for large collections, an OpenAI reranking evaluation
+harness, CSV export, interview scorecards.
 
 ## Known limitations
 
@@ -266,12 +311,27 @@ All errors share one shape: `{"error": {"code", "message", "detail?"}}`.
 * pgvector similarity in mock mode approximates lexical overlap (hashed
   n-grams), not learned semantics.
 * Single-process deployment profile (uvicorn workers, no queue) — appropriate
-  for demo scale; documented in `SECURITY.md` and `ARCHITECTURE.md`.
+  for demo scale; documented in `SECURITY.md` and `docs/ARCHITECTURE.md`.
 
 ## Contributing
 
-See `CONTRIBUTING.md` — synthetic data only, explainability guarantees are a
-contract, and `main` stays green. Security issues: `SECURITY.md`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) — synthetic data only, explainability
+guarantees are a contract, and `main` stays green. Community expectations:
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security issues:
+[SECURITY.md](SECURITY.md) (private reporting only). Release history:
+[CHANGELOG.md](CHANGELOG.md). New to GitHub or to maintaining a project? Start
+with [docs/GITHUB_FOR_OWNER.md](docs/GITHUB_FOR_OWNER.md) and
+[docs/MAINTAINER_GUIDE.md](docs/MAINTAINER_GUIDE.md).
+
+## Development transparency
+
+Parts of this repository were developed with AI coding assistants working
+from human-authored specifications, architecture decisions and review. The
+project owner maintains the repository and owns every change; every behavior
+claim in this README is backed by the test suite, the CI pipeline, or an
+executed acceptance run (recorded in
+[CHATGPT_REVIEW_HANDOFF.md](CHATGPT_REVIEW_HANDOFF.md)). The commit history is
+real work, not manufactured activity.
 
 ## License
 

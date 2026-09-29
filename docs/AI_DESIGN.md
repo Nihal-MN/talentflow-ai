@@ -2,7 +2,7 @@
 
 How the intelligence layer works, why it is shaped this way, and what it
 deliberately does **not** do. Companion documents: `RESPONSIBLE_AI.md`
-(principles), `docs/adr/0002` (provider adapters), `docs/adr/0003` (matching).
+(principles), `adr/0002` (provider adapters), `adr/0003` (matching).
 
 ## 0. At a glance (audit summary)
 

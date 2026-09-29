@@ -1,6 +1,6 @@
 # Architecture — TalentFlow AI
 
-> Decision records for the choices below live in `docs/adr/`. This document is
+> Decision records for the choices below live in `adr/`. This document is
 > the map; the ADRs are the reasoning.
 
 ## 1. System context
@@ -228,5 +228,5 @@ integration on SQLite, 18/18 frontend, coverage 91%**):
 * frontend: component tests (match card, stage controls, badges) and client
   error-handling tests;
 * manual acceptance: documented checklist executed against a live stack with
-  screenshots (`docs/screenshots/`), including a full wipe-and-rebuild
+  screenshots (`screenshots/`), including a full wipe-and-rebuild
   Docker clean-start run.
