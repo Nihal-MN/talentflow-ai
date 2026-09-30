@@ -179,3 +179,43 @@ def test_parse_partial_date_handles_dotted_formats():
     assert parse_partial_date("01.04.2021") == date(2021, 4, 1)
     assert parse_partial_date("10.2015") == date(2015, 10, 1)
     assert parse_partial_date("31.12.2099") == date(2099, 12, 31)
+
+
+def test_education_line_splits_degree_and_institution():
+    resume = "Education\nBSc Computer Science - American University of Sharjah (2014 - 2018)\n"
+    candidate = PROVIDER.extract_candidate(resume)
+
+    (education,) = candidate.educations
+    assert education.degree == "BSc Computer Science"
+    assert education.institution == "American University of Sharjah"
+    assert (education.start_year, education.end_year) == (2014, 2018)
+    # each stored field stays a verbatim substring of the source line
+    assert education.degree in resume
+    assert education.institution in resume
+
+
+def test_extract_job_parses_markdown_job_description():
+    md = """# Support Team Lead
+
+**Company:** Lighthouse Cargo · **Location:** Dubai, UAE · **Type:** Full-time
+
+## About the role
+
+We are looking for someone to run our customer support desk.
+
+## Requirements
+
+- 3+ years in customer support for logistics or SaaS products
+- Experience with Zendesk or a similar ticketing tool
+
+## Nice to have
+
+- Experience with SQL or BI tools
+"""
+    job = PROVIDER.extract_job(md)
+
+    assert job.title == "Support Team Lead"
+    assert job.company == "Lighthouse Cargo"
+    assert job.location == "Dubai"
+    assert any(r.category == "experience" for r in job.requirements)
+    assert any(r.kind == "preferred" for r in job.requirements)

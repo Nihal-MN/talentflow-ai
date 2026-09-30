@@ -408,6 +408,45 @@ def _split_header(header: str) -> tuple[str | None, str | None, str | None]:
     return first or None, second or None, location
 
 
+_YEAR_SUFFIX_RE = re.compile(
+    r"\s*[\(\[]?\s*(?:19|20)\d{2}\s*[–—-]+\s*(?:19|20)\d{2}\s*[\)\]]?\s*$"
+)
+
+
+def _strip_year_suffix(line: str) -> str:
+    """Drop a trailing year range like ``(2014 - 2018)`` from an education line."""
+    return _YEAR_SUFFIX_RE.sub("", line).strip()
+
+
+def _split_degree_line(
+    line: str, university_match: re.Match[str] | None
+) -> tuple[str | None, str | None]:
+    """Split a combined education line into ``(degree, institution)``.
+
+    Lines like ``BSc Computer Science - American University of Sharjah
+    (2014 - 2018)`` carry both the degree and the institution. Storing the
+    whole line in *both* fields duplicated it in the UI and made the matching
+    evidence quote a string that is not verbatim in the resume, so the line is
+    split at its separator — each stored field stays a verbatim substring of
+    the original line.
+    """
+    text = _strip_year_suffix(line)
+    if not university_match or not text:
+        return (text[:150] or None), None
+    segments = [s.strip() for s in re.split(r"\s+[–—-]\s+|,\s+", text) if s.strip()]
+    degree_idx = next((i for i, s in enumerate(segments) if _DEGREE_RE.search(s)), None)
+    uni_idx = next((i for i, s in enumerate(segments) if _UNIVERSITY_RE.search(s)), None)
+    if len(segments) <= 1 or degree_idx is None or uni_idx is None or degree_idx == uni_idx:
+        return (text[:150] or None), None
+    if degree_idx < uni_idx:
+        degree = ", ".join(segments[degree_idx:uni_idx])
+        institution = ", ".join(segments[uni_idx:])
+    else:
+        institution = ", ".join(segments[uni_idx:degree_idx])
+        degree = ", ".join(segments[degree_idx:])
+    return (degree[:150] or None), (institution[:150] or None)
+
+
 def _parse_educations(lines: list[str]) -> list[ExtractedEducation]:
     entries: list[ExtractedEducation] = []
     current: ExtractedEducation | None = None
@@ -420,15 +459,14 @@ def _parse_educations(lines: list[str]) -> list[ExtractedEducation]:
         university_match = _UNIVERSITY_RE.search(line)
         if degree_match:
             field_match = _FIELD_RE.search(line)
+            degree, institution = _split_degree_line(line, university_match)
             current = ExtractedEducation(
-                institution=None,
-                degree=line[:150],
+                institution=institution,
+                degree=degree,
                 field_of_study=(field_match.group(1).strip()[:120] if field_match else None),
                 start_year=min(years) if years else None,
                 end_year=max(years) if years else None,
             )
-            if university_match:
-                current.institution = line[:150]
             entries.append(current)
             continue
         if university_match:

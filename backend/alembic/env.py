@@ -23,6 +23,19 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
+# The HNSW index on ``embedding_records.embedding`` is created via raw DDL in
+# the initial migration (pgvector-specific opclass — not portable to SQLite).
+# It is intentionally absent from the SQLAlchemy metadata, so autogenerate
+# would otherwise propose dropping it on PostgreSQL. Exclude it from
+# autogenerate comparison so ``alembic check`` stays clean.
+_HNSW_INDEX = "ix_embedding_records_embedding_hnsw"
+
+
+def _include_object(obj, name, type_, reflected, compare_to):  # noqa: ANN001
+    if type_ == "index" and name == _HNSW_INDEX and compare_to is None:
+        return False
+    return True
+
 
 def _database_url() -> str:
     return get_settings().sqlalchemy_url
@@ -38,6 +51,7 @@ def run_migrations_offline() -> None:
         dialect_opts={"paramstyle": "named"},
         compare_type=True,
         render_as_batch=url.startswith("sqlite"),
+        include_object=_include_object,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -56,6 +70,7 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             compare_type=True,
             render_as_batch=connection.dialect.name == "sqlite",
+            include_object=_include_object,
         )
         with context.begin_transaction():
             context.run_migrations()

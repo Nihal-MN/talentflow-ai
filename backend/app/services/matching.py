@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session
 from app.ai.base import EmbeddingProvider
 from app.ai.embeddings import cosine_similarity
 from app.models.application import Application
-from app.models.candidate import Candidate
+from app.models.candidate import Candidate, CandidateEducation
 from app.services.embeddings_store import get_owner_chunks
 from app.services.matching_evidence import candidate_haystack, first_mention, terms_from_requirement
 from app.services.skills import are_related, canonicalize
@@ -464,6 +464,31 @@ def _evaluate_experience(
     return "missing", f"{years:g} years of experience vs required {min_years:g} years.", [computed]
 
 
+def _education_snippet(candidate: Candidate, education: CandidateEducation) -> str:
+    """Quote an education entry, preferring text that is verbatim in the resume.
+
+    Degree and institution are stored as separate fields; they are reassembled
+    in the resume's own formatting when that string occurs in the stored resume
+    text, so every quoted snippet stays traceable to the source. Falls back to
+    a display join for profiles without stored resume text.
+    """
+    degree, institution = education.degree, education.institution
+    parts = [part for part in (degree, institution) if part]
+    variants: list[str] = []
+    if degree and institution:
+        joined = f"{degree} - {institution}"
+        if education.start_year and education.end_year:
+            variants.append(f"{joined} ({education.start_year} - {education.end_year})")
+        variants.append(joined)
+        variants.append(f"{degree}, {institution}")
+    variants.extend(parts)
+    resume_text = (candidate.resume_text or "").lower()
+    for variant in variants:
+        if variant and variant.lower() in resume_text:
+            return variant
+    return " — ".join(parts)
+
+
 def _evaluate_education(
     candidate: Candidate, requirement: JobRequirement
 ) -> tuple[str, str, list[Evidence]]:
@@ -477,7 +502,7 @@ def _evaluate_education(
     matches = [term for term in terms if _word_in(term, pool)]
     evidence = [
         Evidence(
-            snippet=" — ".join(part for part in [edu.degree, edu.institution] if part),
+            snippet=_education_snippet(candidate, edu),
             source="education",
             match_type="lexical",
             detail=f"education entry matching '{matches[0]}'" if matches else None,

@@ -91,6 +91,21 @@ _MUST_LINE_HINTS = ("required", "must have", "must-have", "minimum", "at least")
 _BULLET_RE = re.compile(r"^\s*(?:[-*•·▪]|(?:\d{1,2}[.)]))\s+")
 _HEADER_MAX_WORDS = 6
 
+_MD_HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+")
+_MD_BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
+
+
+def _normalize_markdown(line: str) -> str:
+    """Strip Markdown decoration so pasted README-style JDs parse like plain text.
+
+    Handles heading markers (``## Requirements``), bold labels
+    (``**Company:**``) and stray bold markers — the shipped example JDs are
+    Markdown files and pasting a Markdown description is a normal workflow.
+    """
+    line = _MD_HEADING_RE.sub("", line)
+    line = _MD_BOLD_RE.sub(r"\1", line)
+    return line.replace("**", "")
+
 
 def _clean_line(line: str) -> str:
     return _BULLET_RE.sub("", line).strip()
@@ -163,7 +178,7 @@ def _detect_location(text: str) -> str | None:
 
 def parse_job(jd_text: str, *, fallback_title: str | None = None) -> ExtractedJob:
     """Parse a job description into a structured job with requirements."""
-    lines = [line.rstrip() for line in jd_text.replace("\r", "").split("\n")]
+    lines = [_normalize_markdown(line.rstrip()) for line in jd_text.replace("\r", "").split("\n")]
 
     title = None
     company = None
@@ -187,7 +202,8 @@ def parse_job(jd_text: str, *, fallback_title: str | None = None) -> ExtractedJo
     for line in lines[:15]:
         match = re.match(r"^\s*company\s*[:\-]\s*(.+)$", line.strip(), re.IGNORECASE)
         if match:
-            company = match.group(1).strip()
+            # Metadata lines often pack several fields: "Company: X · Location: Y"
+            company = re.split(r"\s*[·|]\s*", match.group(1).strip())[0].strip()
             break
 
     title = title or fallback_title

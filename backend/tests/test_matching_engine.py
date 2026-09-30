@@ -397,3 +397,34 @@ def test_experience_years_computed_from_dates_not_claims(db_session):
     # years_experience is None → unknown (engine refuses to guess from dates it
     # has not normalized; normalization happens at ingestion).
     assert evaluation.status == "unknown"
+
+
+def test_education_evidence_snippet_is_traceable_to_resume(db_session):
+    resume_line = "BSc Computer Science - American University of Sharjah (2014 - 2018)"
+    candidate = make_candidate(
+        db_session,
+        resume_text=f"Education\n{resume_line}\n",
+        educations=[
+            {
+                "degree": "BSc Computer Science",
+                "institution": "American University of Sharjah",
+            }
+        ],
+    )
+    job = make_job(
+        db_session,
+        [
+            {
+                "category": "education",
+                "label": "Bachelor's degree in Computer Science",
+                "keywords": "bachelor",
+            }
+        ],
+    )
+    (evaluation,) = evaluate(db_session, candidate, job).requirements
+
+    assert evaluation.status == "met"
+    snippet = evaluation.evidence[0].snippet
+    # quoted evidence is verbatim in the stored resume — not a synthesized join
+    assert snippet in resume_line
+    assert " — " not in snippet
