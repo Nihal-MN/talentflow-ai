@@ -512,6 +512,11 @@ the tests and the E2E run above.
 - **Starter issues:** #10–#15 open (5 starter issues + a dependency-migration
   tracker); the two failing Dependabot PRs (#1 ESLint 10, #8 TypeScript 7)
   carry comments pointing at #15.
+- **Housekeeping (API-completed):** 8 of 9 Dependabot upgrades merged
+  (#2–#7, #9, plus `setup-uv@v7` as a direct commit superseding #5); #1 and
+  #8 remain per the #15 plan. Hardening applied: default workflow token
+  read-only, force-push + deletion blocked on `main` (admin-exempt),
+  CODEOWNERS added, merged branches auto-delete.
 - **Dependabot:** opened 9 upgrade PRs automatically after the first push;
   7 are passing CI, 2 major bumps (ESLint 10, TypeScript 7.0.2) fail CI and
   await migration work (§23).
