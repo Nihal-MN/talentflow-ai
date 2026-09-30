@@ -135,3 +135,47 @@ def test_screening_questions_cover_gaps_and_strengths():
     assert any("kubernetes" in q.question for q in questions)
     assert any(q.rationale for q in questions)
     assert len(questions) <= 7
+
+
+GERMAN_RESUME = """\
+Lena Beispiel
+Backend Engineer
+lena.beispiel@example.com | +49 30 555 0188 | Berlin, Germany
+
+BERUFSERFAHRUNG
+Senior Backend Engineer — Nordwind Logistik GmbH, Berlin
+01.04.2021 – 31.12.2099
+- Migrated services using Kafka and PostgreSQL
+
+Backend Developer — Spree GmbH
+15.06.2019 – 31.03.2021
+- Built REST APIs in Python
+
+AUSBILDUNG
+B.Sc. Informatik — TU Berlin (2016 – 2018)
+
+KENNTNISSE
+Python, Django, PostgreSQL, Kafka
+"""
+
+
+def test_extract_candidate_handles_german_headers_and_dotted_dates():
+    candidate = PROVIDER.extract_candidate(GERMAN_RESUME, source_filename="lena_beispiel.txt")
+
+    assert candidate.full_name == "Lena Beispiel"
+    assert candidate.location == "Berlin, Germany"  # from the contact line, not the job title line
+    assert len(candidate.experiences) == 2
+    assert candidate.years_experience and candidate.years_experience > 3
+    skills = {s.normalized_name for s in candidate.skills}
+    assert "python" in skills and "postgresql" in skills and "kafka" in skills
+    assert candidate.educations  # AUSBILDUNG recognized
+
+
+def test_parse_partial_date_handles_dotted_formats():
+    from datetime import date
+
+    from app.core.dates import parse_partial_date
+
+    assert parse_partial_date("01.04.2021") == date(2021, 4, 1)
+    assert parse_partial_date("10.2015") == date(2015, 10, 1)
+    assert parse_partial_date("31.12.2099") == date(2099, 12, 31)

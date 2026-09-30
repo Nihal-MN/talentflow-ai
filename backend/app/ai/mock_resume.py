@@ -28,13 +28,19 @@ _LINKEDIN_RE = re.compile(r"(?:https?://)?(?:[a-z]{2,3}\.)?linkedin\.com/in/[\w-
 _GITHUB_RE = re.compile(r"(?:https?://)?(?:www\.)?github\.com/[\w.-]+", re.IGNORECASE)
 _URL_RE = re.compile(r"https?://[^\s,)]+", re.IGNORECASE)
 
+_DATE_PART = (
+    r"(?:(?:[A-Z][a-z]{2,9}\.?\s+)?\d{1,2}\.\d{1,2}\.\d{4}"  # 01.04.2021
+    r"|(?:[A-Z][a-z]{2,9}\.?\s+)?\d{1,2}\.\d{4}"  # 10.2015
+    r"|(?:[A-Z][a-z]{2,9}\.?\s+)?\d{4}"  # Apr 2021 / 2021
+    r")"
+)
 _DATE_RANGE_RE = re.compile(
-    r"((?:[A-Z][a-z]{2,9}\.?\s+)?\d{4})\s*(?:[–—-]+\s*|\bto\b\s*)"
-    r"((?:[A-Z][a-z]{2,9}\.?\s+)?\d{4}|present|current|now)",
+    rf"({_DATE_PART})\s*(?:[–—-]+\s*|\bto\b\s*)({_DATE_PART}|present|current|now)",
     re.IGNORECASE,
 )
 _DEGREE_RE = re.compile(
-    r"\b(bachelor|master|bsc|msc|mba|phd|diploma|b\.?a\.?|b\.?eng|m\.?eng)\b",
+    r"\b(bachelor|master|b\.?\s?sc\.?|m\.?\s?sc\.?|bsc|msc|mba|phd|diploma|diplom"
+    r"|b\.?a\.?|b\.?eng|m\.?eng)\b",
     re.IGNORECASE,
 )
 _UNIVERSITY_RE = re.compile(r"\b(university|college|institute|school|academy)\b", re.IGNORECASE)
@@ -64,22 +70,29 @@ _ROLE_WORDS = (
 )
 _SECTION_PATTERNS = {
     "summary": re.compile(
-        r"^\s*(?:professional\s+)?(summary|profile|objective|about(?:\s+me)?)\s*:?\s*$",
+        r"^\s*(?:professional\s+)?(summary|profile|objective|about(?:\s+me)?"
+        r"|profil|zusammenfassung|perfil)\s*:?\s*$",
         re.IGNORECASE,
     ),
     "experience": re.compile(
-        r"^\s*(?:work\s+|professional\s+)?(experience|employment(?:\s+history)?|work\s+history|career)\s*:?\s*$",
+        r"^\s*(?:work\s+|professional\s+)?(experience|employment(?:\s+history)?"
+        r"|work\s+history|career|berufserfahrung|werdegang|expérience|experiencia)\s*:?\s*$",
         re.IGNORECASE,
     ),
     "education": re.compile(
-        r"^\s*(education|academic(?:\s+background)?|qualifications)\s*:?\s*$", re.IGNORECASE
+        r"^\s*(education|academic(?:\s+background)?|qualifications"
+        r"|ausbildung|formation|educación)\s*:?\s*$",
+        re.IGNORECASE,
     ),
     "skills": re.compile(
-        r"^\s*(?:technical\s+|core\s+|key\s+)?(skills|technologies|tech\s+stack|tools)\s*:?\s*$",
+        r"^\s*(?:technical\s+|core\s+|key\s+)?(skills|technologies|tech\s+stack|tools"
+        r"|kenntnisse|kompetenzen|fähigkeiten|compétences|habilidades)\s*:?\s*$",
         re.IGNORECASE,
     ),
     "certifications": re.compile(
-        r"^\s*(certifications?|licenses?|courses?)\s*:?\s*$", re.IGNORECASE
+        r"^\s*(certifications?|licenses?|courses?|zertifizier(?:ung|ungen)"
+        r"|certificaciones)\s*:?\s*$",
+        re.IGNORECASE,
     ),
 }
 _CITIES = CITIES
@@ -233,6 +246,19 @@ def _extract_name(non_empty: list[str], source_filename: str | None) -> str:
 
 
 def _extract_location(non_empty: list[str]) -> str | None:
+    # First pass: an explicit "City, Country" span anywhere in the top lines —
+    # including contact lines that also carry email/phone/links, which is where
+    # resumes most commonly put their location.
+    for line in non_empty[:14]:
+        cleaned = _clean(line)
+        for city in _CITIES:
+            match = re.search(
+                rf"(?<![A-Za-z]){re.escape(city)}(?![A-Za-z]),\s*([A-Z][A-Za-z .'-]+)",
+                cleaned,
+                re.IGNORECASE,
+            )
+            if match:
+                return cleaned[match.start() : match.end()].strip()[:120]
     for line in non_empty[:14]:
         cleaned = _clean(line)
         if _EMAIL_RE.search(cleaned) or _URL_RE.search(cleaned):

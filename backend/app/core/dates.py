@@ -32,6 +32,8 @@ _ISO_MONTH = re.compile(r"^(\d{4})-(\d{2})$")
 _YEAR_ONLY = re.compile(r"^(\d{4})$")
 _MONTH_YEAR = re.compile(r"^([A-Za-z]{3,9})\.?\s+(\d{4})$")
 _SLASH = re.compile(r"^(\d{1,2})/(\d{4})$")
+_DOTTED_DAY = re.compile(r"^(\d{1,2})\.(\d{1,2})\.(\d{4})$")
+_DOTTED_MONTH = re.compile(r"^(\d{1,2})\.(\d{4})$")
 
 
 def parse_partial_date(value: object) -> date | None:
@@ -59,6 +61,12 @@ def parse_partial_date(value: object) -> date | None:
         if month:
             return _safe_date(int(match.group(2)), month, 1)
     if match := _SLASH.match(text):
+        month, year = (int(part) for part in match.groups())
+        return _safe_date(year, month, 1)
+    if match := _DOTTED_DAY.match(text):  # German/Central-European style
+        day, month, year = (int(part) for part in match.groups())
+        return _safe_date(year, month, day)
+    if match := _DOTTED_MONTH.match(text):  # "10.2015"
         month, year = (int(part) for part in match.groups())
         return _safe_date(year, month, 1)
     return None
