@@ -35,7 +35,7 @@ talentflow-ai/
 │   │   └── seed/             demo_jobs.py, demo_candidates*.py,
 │   │                         generate_files.py, run_seed.py
 │   ├── alembic/versions/     3dc9b96a8fcf_initial_schema.py (single migration)
-│   ├── tests/                12 test modules, 95 tests
+│   ├── tests/                14 test modules, 111 tests
 │   ├── scripts/smoke_api.py  human-readable end-to-end script
 │   ├── pyproject.toml + uv.lock, Dockerfile, docker-entrypoint.sh
 ├── frontend/                 Next.js 16 (App Router) / React 19 / TS
@@ -323,7 +323,7 @@ POST /jobs/upload     (multipart file)            ─┴→ same path after extr
   + `AI_PROVIDER=mock` + empty key, builds a shared in-memory DB with FK
   pragmas on, overrides `get_db` and both provider dependencies, and wipes all
   tables between tests. No network, no keys, no shared state.
-- **Comprehensive**: 12 modules / 95 tests — health, jobs (extraction quality
+- **Comprehensive**: 14 modules / 111 tests — health, jobs (extraction quality
   assertions), candidates (PDF/DOCX/TXT ingestion, notes, tags, error paths),
   documents (encodings, corrupt PDFs, caps), mock extraction (section
   detection, boundary precision, determinism), normalization, skill taxonomy,
@@ -395,9 +395,9 @@ Native alternative: `make setup && make seed-native && make dev`
 
 ```bash
 make test                                            # backend + frontend
-cd backend && uv run pytest                          # 94 passed, 1 skipped (SQLite)
+cd backend && uv run pytest                          # 110 passed, 1 skipped (SQLite)
 cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
-  uv run pytest                                       # 95 passed, 0 skipped
+  uv run pytest                                       # 111 passed, 0 skipped
 cd backend && uv run ruff check app tests
 cd frontend && npm test && npm run typecheck && npm run lint && npm run build
 cd backend && uv run python scripts/smoke_api.py     # end-to-end in-process script
@@ -440,7 +440,7 @@ GitHub settings in §29.
 
 - **Repository:** https://github.com/Nihal-MN/talentflow-ai (public)
 - **Code state reviewed:** `b17b2c95f5a48646f97dc57e8093646cf02b3a5c`
-  (`b17b2c95`), branch `main`, tagged `v0.1.0` (commit #19; later commits are documentation-only).
+  (`b17b2c95`), branch `main`, tagged `v0.1.0` (commit #19; the repository has moved on since — see §30 and §31).
 - Commit author email: `138873694+Nihal-MN@users.noreply.github.com` (verified
   with `git log --format='%ae' | sort -u` — no personal email in public history).
 - Commits after the reviewed SHA touch docs/CI configuration only; run
@@ -449,9 +449,9 @@ GitHub settings in §29.
 ## 25. Test results (actual, 28 Sep 2026)
 
 ```text
-Backend (SQLite, hermetic):   94 passed, 1 skipped in 1.65s
-Backend (PostgreSQL+pgvector): 95 passed in 1.67s   ← Docker db running
-Coverage:                      91% (2851 stmts, 253 missed)
+Backend (SQLite, hermetic):   110 passed, 1 skipped
+Backend (PostgreSQL+pgvector): 111 passed            ← Docker db running
+Coverage:                      92% (2927 stmts, 247 missed)
 Frontend:                      18 passed (3 files)
 Lint:                          ruff clean; eslint clean; tsc --noEmit clean
 Smoke script:                  SMOKE TEST PASSED (job → resume → match →
@@ -570,7 +570,85 @@ housekeeping:
   **TypeScript 7**) are **blocked upstream** (diagnosed on #15, PRs closed).
   Branch protection now blocks force-pushes and deletions; workflow tokens
   are read-only; CODEOWNERS added; merged branches auto-delete.
-- **After all changes:** backend **108 tests** (107 pass + 1 skip on SQLite;
-  full pass on PostgreSQL), frontend 18/18 + ESLint + strict `tsc` +
+- **After all changes:** backend **111 tests** (110 pass + 1 skip on SQLite;
+  111 pass on PostgreSQL; 92% coverage), frontend 18/18 + ESLint + strict `tsc` +
   production build; all 9 portfolio screenshots refreshed; final `main` CI
   green.
+
+
+## 31. Final pre-release verification pass (30 Sep 2026)
+
+An external review of the published repository requested a final
+verification and polish pass. No architecture changes, no new features —
+only genuine issues found during verification were fixed.
+
+**Fixes shipped in this pass**
+
+1. `backend/alembic/env.py` — `alembic check` now reports *"No new upgrade
+   operations detected"* on PostgreSQL: the pgvector HNSW index (created via
+   raw DDL in the initial migration, intentionally absent from the ORM
+   metadata) is excluded from autogenerate comparison via `include_object`.
+2. `backend/app/ai/mock_resume.py` — combined education lines
+   (`BSc Computer Science - American University of Sharjah (2014 - 2018)`)
+   are split into separate `degree` / `institution` fields instead of the
+   whole line being duplicated into both. Each stored field remains a
+   verbatim substring of the resume line.
+3. `backend/app/services/matching.py` — education evidence snippets are
+   assembled to match the resume's own formatting when that string occurs in
+   the stored resume text (`_education_snippet`), keeping every quoted
+   snippet traceable; a display join is used only when no stored text exists.
+4. `backend/app/ai/mock_jd.py` — Markdown job descriptions (headings,
+   `**bold**` labels — the shipped `examples/jobs` files are Markdown) parse
+   correctly: title `Support Team Lead` (was `# Support Team Lead**…`),
+   company `Lighthouse Cargo` (was empty), and the responsibilities section
+   no longer leaks into requirements.
+5. Regression tests added: `test_education_line_splits_degree_and_institution`,
+   `test_education_evidence_snippet_is_traceable_to_resume`,
+   `test_extract_job_parses_markdown_job_description`.
+6. README / TESTING / RELEASE_CHECKLIST / this handoff — every current test
+   count refreshed to the actual suite (below); v0.1.0 release notes kept
+   as-of-release with a clarifying note.
+
+**Verified results**
+
+- Backend: **111 tests** — 110 pass + 1 skip (pgvector-only test) on SQLite;
+  **111/111 pass against PostgreSQL + pgvector**, coverage **92%**.
+- Frontend: 18/18 vitest · ESLint clean · strict `tsc` clean · production
+  build green. axe-core re-check: **0 violations across all 9 pages**.
+- Docker: `docker compose config` clean; images rebuilt; `db`/`api`/`web`
+  healthy; migrations applied from empty; seed → 10 synthetic candidates /
+  4 jobs / 10 applications; `/health` reports `postgresql` + live counts.
+- Evidence traceability (live, all seeded data): **233/233 resume-claiming
+  evidence snippets across all 40 candidate×job pairs are verbatim substrings
+  of the candidates' stored resume sources** (checked programmatically,
+  including PDF and DOCX uploads).
+- `alembic check` — clean (see fix 1).
+- Matching engine: weights `must_have 0.60 / preferred 0.20 / experience 0.10
+  / domain 0.10`, re-normalized over present components; `met=1.0`,
+  `partial=0.5`, `missing=0.0`; deterministic with stable ordering; semantic
+  similarity advisory only and never overriding a deterministic miss.
+- UI smoke pass (browser automation): resume upload through the UI,
+  JD creation, matching view, pipeline move + audit trail, screening
+  generation, system health — all exercised against the Docker stack.
+- CI: GitHub Actions **CI + CodeQL green on `main`** — verified via `gh run
+  list` on the pushed tip of this pass (see the Actions tab for run IDs).
+
+**OpenAI status — honest three-tier labeling**
+
+- *Implemented:* OpenAI Responses API provider with structured Pydantic
+  outputs (`backend/app/ai/openai_provider.py`); defaults `gpt-5.6-terra`
+  (extraction) and `text-embedding-3-small` (embeddings) — both confirmed as
+  current OpenAI model identifiers against OpenAI's API docs.
+- *Tested offline:* provider wiring, prompts and schema parsing covered via
+  injected/stubbed clients in the test suite.
+- *Live-verified:* **no** — no `OPENAI_API_KEY` was available in this
+  environment, so no live API request was executed. The app defaults to the
+  clearly-labeled deterministic mock (`AI_PROVIDER=auto`) and this is stated
+  in README, `docs/AI_DESIGN.md` and the System Health page.
+
+**Release / git**
+
+- `v0.1.0` was tagged and released earlier on 30 Sep 2026 (see §28); this
+  pass created **no** new tags or releases.
+- The commit that adds this section is the final `main` tip reviewed here
+  (SHA visible in the repository's commit history).
