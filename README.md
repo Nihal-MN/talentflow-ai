@@ -3,7 +3,7 @@
 **Open-source AI-native hiring pipeline with structured talent data, explainable candidate matching, semantic search and recruiter-in-the-loop workflows.**
 
 [![CI](https://github.com/Nihal-MN/talentflow-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Nihal-MN/talentflow-ai/actions/workflows/ci.yml)
-![Backend tests: 94 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-95_passing_on_PostgreSQL-brightgreen)
+![Backend tests: 111 passing on PostgreSQL](https://img.shields.io/badge/backend_tests-111_passing_on_PostgreSQL-brightgreen)
 ![Frontend tests: 18 passing](https://img.shields.io/badge/frontend_tests-18_passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 ![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
@@ -159,7 +159,7 @@ a contract, not marketing.
 | Database | PostgreSQL 16 + pgvector (HNSW cosine index) · SQLite fallback for dev/tests |
 | AI | OpenAI Responses API (structured outputs) + deterministic mock; embeddings 1536-dim |
 | Infra | Docker + Docker Compose (any Docker daemon — Desktop, Colima, remote) |
-| Quality | pytest (95 tests, 91% coverage) · vitest + Testing Library (18 tests) · ruff · ESLint · strict tsc · GitHub Actions |
+| Quality | pytest (111 tests, 92% coverage) · vitest + Testing Library (18 tests) · ruff · ESLint · strict tsc · GitHub Actions |
 
 ## Quick start
 
@@ -233,16 +233,16 @@ states the active mode explicitly.
 ```bash
 make test                                  # everything below, one command
 
-cd backend && uv run pytest                # 94 passed + 1 skipped (SQLite run)
+cd backend && uv run pytest                # 110 passed + 1 skipped (SQLite run)
 cd backend && uv run ruff check app tests  # lint
 # with the Docker database running — nothing skips:
 cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
-  uv run pytest                            # 95 passed
+  uv run pytest                            # 111 passed
 
 cd frontend && npm test && npm run typecheck   # 18 passed + strict TS
 ```
 
-Coverage: 91% backend. CI runs the same suites (against a real
+Coverage: 92% backend. CI runs the same suites (against a real
 PostgreSQL+pgvector service container) plus Docker image builds — see
 `.github/workflows/ci.yml` and `docs/TESTING.md` for the acceptance checklist and
 the E2E scenario.
@@ -263,7 +263,7 @@ talentflow-ai/
 │   │   │               normalization, documents, embeddings_store, skills
 │   │   └── seed/       synthetic dataset + `python -m app.seed`
 │   ├── alembic/        migrations (PostgreSQL + SQLite)
-│   └── tests/          95 tests
+│   └── tests/          111 tests
 ├── frontend/           Next.js app (9 pages + typed client + UI kit)
 ├── .github/            CI + CodeQL workflows, Dependabot, issue/PR templates
 ├── docs/               architecture, AI design, matching engine, API, testing,

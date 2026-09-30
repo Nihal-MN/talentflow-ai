@@ -35,6 +35,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   surface, per-surface rather than globally).
 - Accessible names for the resume and JD file inputs.
 - Heading order on the matching page.
+- **Education parsing** — combined ``Degree - Institution (years)`` lines are
+  split into separate `degree` / `institution` fields (each a verbatim
+  substring of the resume line) instead of duplicating the whole line into
+  both fields.
+- **Education evidence** — match evidence for education is quoted in the
+  resume's own formatting when the string occurs in the stored resume text;
+  all resume-claiming evidence snippets across the seeded data are now
+  verbatim-traceable to the stored resume sources (checked programmatically:
+  233/233 across all 40 candidate×job pairs).
+- **Markdown job descriptions** — headings and ``**bold**`` labels parse
+  correctly (correct title/company on the shipped Markdown example JD; the
+  responsibilities section no longer leaks into requirements).
+- **`alembic check`** now reports "No new upgrade operations detected" on
+  PostgreSQL — the pgvector HNSW index (created via raw DDL, intentionally
+  absent from the ORM metadata) is excluded from autogenerate comparison.
 
 ## [0.1.0] - 2026-09-29
 

@@ -7,10 +7,10 @@ make test              # backend + frontend in one go
 
 # backend (pytest + coverage)
 cd backend
-uv run pytest                              # 94 passed + 1 skipped on SQLite (pgvector test needs PostgreSQL)
+uv run pytest                              # 110 passed + 1 skipped on SQLite (pgvector test needs PostgreSQL)
 DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" \
-  uv run pytest                            # 95/95 — with the Docker db running, nothing skips
-uv run pytest --cov=app --cov-report=term  # coverage report (91%)
+  uv run pytest                            # 111/111 — with the Docker db running, nothing skips
+uv run pytest --cov=app --cov-report=term  # coverage report (92%)
 uv run python scripts/smoke_api.py         # end-to-end flow — human-readable output
 
 # frontend (vitest + strict TS)
@@ -98,4 +98,4 @@ sequence below is exactly what was run, including the bug it caught — see
 
 We test *behaviors that are load-bearing claims* — explainability guarantees,
 validation gates, audit trails, honest labeling — not line-count theater. The
-91% coverage number is a byproduct of that, not the goal.
+92% coverage number is a byproduct of that, not the goal.

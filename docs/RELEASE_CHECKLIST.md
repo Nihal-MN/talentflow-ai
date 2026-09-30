@@ -5,10 +5,10 @@ nothing here is aspirational; if a step can't be done, the release waits.
 
 ## 1. Tests
 
-- [ ] Backend, hermetic: `cd backend && uv run pytest` → expect **94 passed, 1 skipped**
+- [ ] Backend, hermetic: `cd backend && uv run pytest` → expect **110 passed, 1 skipped**
 - [ ] Backend, PostgreSQL+pgvector (needs `docker compose up -d db`):
       `cd backend && DATABASE_URL="postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow" uv run pytest`
-      → expect **95 passed, 0 skipped**
+      → expect **111 passed, 0 skipped**
 - [ ] Frontend: `cd frontend && npm test && npm run typecheck` → expect 18 passed + clean types
 
 ## 2. Lint
