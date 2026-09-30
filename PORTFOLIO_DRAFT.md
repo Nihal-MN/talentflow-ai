@@ -78,11 +78,11 @@ Responsible-AI constraints enforced in code.
 > questions; a health page keeps the platform honest.
 >
 > Built with FastAPI, Next.js/TypeScript, PostgreSQL + pgvector (semantic
-> search), Docker Compose, and 113 automated tests — including a structural
+> search), Docker Compose, and 129 automated tests (111 backend, 18 frontend) — including a structural
 > guard that no protected-attribute data can exist anywhere in the system.
 > The human always makes the decision.
 >
-> Repo: [github.com/<you>/talentflow-ai]
+> Repo: github.com/Nihal-MN/talentflow-ai
 
 ## LinkedIn launch post (draft)
 
@@ -110,9 +110,9 @@ Responsible-AI constraints enforced in code.
 > not a policy.)
 >
 > Stack: FastAPI · Next.js/TypeScript · PostgreSQL + pgvector · Docker.
-> 113 tests, CI on GitHub Actions. Feedback very welcome.
+> 129 tests (111 backend, 18 frontend), CI on GitHub Actions. Feedback very welcome.
 >
-> → [repo link] · [optional: 30-sec screen recording]
+> → https://github.com/Nihal-MN/talentflow-ai · [optional: 30-sec screen recording]
 
 ## Technical LinkedIn post ideas (pick any; each is one screen + one insight)
 
