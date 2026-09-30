@@ -166,7 +166,7 @@ a contract, not marketing.
 ### Docker (full stack: PostgreSQL + pgvector)
 
 ```bash
-git clone <your-fork-url> talentflow-ai && cd talentflow-ai
+git clone https://github.com/Nihal-MN/talentflow-ai.git && cd talentflow-ai
 cp .env.example .env            # optional — every value has a safe default
 docker compose up --build -d
 docker compose exec api python -m app.seed   # load the synthetic demo dataset
@@ -295,9 +295,9 @@ All errors share one shape: `{"error": {"code", "message", "detail?"}}`.
 ## Roadmap
 
 Current / Next / Future — with explicit non-goals — in
-[ROADMAP.md](ROADMAP.md). Highlights: authentication + multi-tenant
-workspaces, pagination for large collections, an OpenAI reranking evaluation
-harness, CSV export, interview scorecards.
+[ROADMAP.md](ROADMAP.md). Highlights of what's next: authentication +
+multi-tenant workspaces, an OpenAI reranking evaluation harness, CSV export,
+interview scorecards.
 
 ## Known limitations
 
@@ -315,30 +315,40 @@ harness, CSV export, interview scorecards.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) — synthetic data only, explainability
-guarantees are a contract, and `main` stays green. Community expectations:
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security issues:
-[SECURITY.md](SECURITY.md) (private reporting only). Release history:
-[CHANGELOG.md](CHANGELOG.md). New to GitHub or to maintaining a project? Start
-with [docs/GITHUB_FOR_OWNER.md](docs/GITHUB_FOR_OWNER.md) and
-[docs/MAINTAINER_GUIDE.md](docs/MAINTAINER_GUIDE.md).
+Small, focused pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md) — it has the workflow and the ground rules,
+and the two that matter most are simple: **synthetic data only**, and the
+explainability promises stay intact (quoted evidence, published weights, a
+human decides). Keep `main` green and you'll get a careful, friendly review.
+
+- Found a bug or have an idea? Open an issue — the templates will guide you.
+- Security issue? Please report it privately via [SECURITY.md](SECURITY.md),
+  never in a public issue.
+- How we treat each other: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+- Release history: [CHANGELOG.md](CHANGELOG.md).
+
+New to open source, or to maintaining a repository? Start with
+[docs/GITHUB_FOR_OWNER.md](docs/GITHUB_FOR_OWNER.md) and
+[docs/MAINTAINER_GUIDE.md](docs/MAINTAINER_GUIDE.md) — they were written for
+exactly that.
 
 ## Development transparency
 
-Parts of this repository were developed with AI coding assistants working
-from human-authored specifications, architecture decisions and review. The
-project owner maintains the repository and owns every change; every behavior
-claim in this README is backed by the test suite, the CI pipeline, or an
-executed acceptance run (recorded in
-[CHATGPT_REVIEW_HANDOFF.md](CHATGPT_REVIEW_HANDOFF.md)). The commit history is
-real work, not manufactured activity.
+I build this project in the open with AI coding assistants: they help write
+code from the specifications, architecture decisions and reviews that I set,
+and every change is reviewed by me before it lands. I stand behind everything
+in this repository — and you don't have to take that on faith. The test suite,
+the CI pipeline and the recorded acceptance runs
+([CHATGPT_REVIEW_HANDOFF.md](CHATGPT_REVIEW_HANDOFF.md)) let you verify every
+claim yourself.
 
 ## Acknowledgements
 
 TalentFlow AI stands on excellent open source: FastAPI and Starlette, Pydantic,
 SQLAlchemy + Alembic, [pgvector](https://github.com/pgvector/pgvector), Next.js
-and React, Tailwind CSS, ruff, pytest, vitest, and the `uv` toolchain — thank
-you to all their maintainers and contributors.
+and React, Tailwind CSS, ruff, pytest, vitest and the `uv` toolchain. Thank you
+to every maintainer and contributor behind these projects — this demo is a thin
+layer on top of an enormous amount of their work.
 
 ## License
 

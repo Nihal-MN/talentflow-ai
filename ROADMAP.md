@@ -21,15 +21,17 @@ Working today, verified by tests and an end-to-end acceptance run:
   rationale.
 - Notes, tags, system health report; zero-config Docker demo; hermetic test
   suites; CI on GitHub Actions.
+- Pagination (`limit`/`offset` + `X-Total-Count` headers) on job, candidate
+  and application collections.
+- Accessibility audit across all 9 pages (axe-core; findings fixed — 0
+  violations — with method and scope in `docs/ACCESSIBILITY.md`).
 
 ## Next — high priority
 
 - **Authentication and multi-tenant workspaces** — the service layer is the
   single mutation choke-point, so an auth wrapper lands in one place.
-- **Pagination and filtering** on candidate/job collections (currently
-  unbounded — fine for demo scale, not beyond).
-- **Accessibility audit** — keyboard flows, focus states and contrast
-  verified across every page, with fixes and a documented checklist.
+- **Filtering** on candidate/job collections (pagination landed in v0.1.0;
+  richer filters still to come).
 - **OpenAI reranking evaluation harness** — an offline eval set to measure and
   document extraction quality of the live provider, so provider quality is a
   measured claim rather than a hope.
