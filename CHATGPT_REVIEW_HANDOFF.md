@@ -541,3 +541,36 @@ Everything programmatic was completed via the authenticated GitHub API (see
    exists; keep Wiki and Projects off — documentation lives in `docs/`.
 3. Optional housekeeping: review the 7 green Dependabot PRs; handle #1/#8 per
    the plan in issue #15.
+
+
+## 30. Post-release improvements (same day, 30 Sep 2026)
+
+The five backlog issues (**#10–#14**) were implemented and shipped directly to
+`main` — each commit carries a `Closes #N` reference — plus maintainer
+housekeeping:
+
+- **#10** — skill taxonomy extensions (languages, mobile, cloud aliases;
+  new `iac` and `mobile` families; dedicated `tests/test_skills.py`).
+- **#11** — verified `curl` cookbook in `docs/API.md` (every command executed
+  against the live Docker stack; outputs pasted from real runs).
+- **#12** — accessibility: **axe-core 4.10.2** audit across all 9 pages.
+  Findings: 71 contrast nodes, 1 unlabeled file input, 1 heading-order skip.
+  All fixed; **final audit: 0 violations on every page**. Method and honest
+  scope in `docs/ACCESSIBILITY.md`.
+- **#13** — pagination completeness: `offset` for `/applications`,
+  **`X-Total-Count`** headers on all list endpoints (CORS-exposed), boundary
+  tests.
+- **#14** — new synthetic examples (career-changer resume, German
+  date-format resume, support team-lead JD) + `scripts/verify_examples.sh`.
+  The new examples **found and fixed three real parser bugs**: dotted
+  `DD.MM.YYYY` dates never matched the range regex, German section headers
+  weren't recognized, and location extraction grabbed job-title lines.
+- **Housekeeping** — 8 of 9 Dependabot upgrades merged (#2–#7, #9, plus
+  `setup-uv@v7` as a direct commit); the two majors (**ESLint 10**,
+  **TypeScript 7**) are **blocked upstream** (diagnosed on #15, PRs closed).
+  Branch protection now blocks force-pushes and deletions; workflow tokens
+  are read-only; CODEOWNERS added; merged branches auto-delete.
+- **After all changes:** backend **108 tests** (107 pass + 1 skip on SQLite;
+  full pass on PostgreSQL), frontend 18/18 + ESLint + strict `tsc` +
+  production build; all 9 portfolio screenshots refreshed; final `main` CI
+  green.
