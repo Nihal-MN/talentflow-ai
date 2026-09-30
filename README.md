@@ -163,6 +163,13 @@ a contract, not marketing.
 
 ## Quick start
 
+**TalentFlow AI is a self-hosted web app — there's no installer file to download.**
+Get the code (green **Code** button above → **Download ZIP**, or `git clone`
+below), start it with Docker in about two minutes, and use it in your browser —
+no API key needed. Every
+[release](https://github.com/Nihal-MN/talentflow-ai/releases/latest) also carries
+a source ZIP.
+
 ### Docker (full stack: PostgreSQL + pgvector)
 
 ```bash
