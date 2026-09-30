@@ -57,7 +57,7 @@ export function TagsEditor({
     <div className="space-y-3">
       <div className="flex flex-wrap gap-1.5">
         {tags.length === 0 ? (
-          <p className="text-sm text-slate-400">No tags yet.</p>
+          <p className="text-sm text-slate-500">No tags yet.</p>
         ) : (
           tags.map((tag) => (
             <span key={tag.id} className="inline-flex items-center gap-1">
@@ -67,7 +67,7 @@ export function TagsEditor({
                 aria-label={`Remove tag ${tag.name}`}
                 disabled={busy}
                 onClick={() => removeTag(tag.id)}
-                className="text-xs text-slate-400 hover:text-rose-600"
+                className="text-xs text-slate-500 hover:text-rose-600"
               >
                 ×
               </button>
@@ -175,7 +175,7 @@ export function NotesPanel({
 
       <ul className="space-y-3">
         {notes.length === 0 ? (
-          <li className="text-sm text-slate-400">No notes yet — add your first above.</li>
+          <li className="text-sm text-slate-500">No notes yet — add your first above.</li>
         ) : (
           notes.map((note) => (
             <li key={note.id} className="rounded-lg bg-slate-50 px-3 py-2.5">
@@ -187,7 +187,7 @@ export function NotesPanel({
                   type="button"
                   disabled={busy}
                   onClick={() => deleteNote(note.id)}
-                  className="text-xs text-slate-400 hover:text-rose-600"
+                  className="text-xs text-slate-500 hover:text-rose-600"
                 >
                   Delete
                 </button>

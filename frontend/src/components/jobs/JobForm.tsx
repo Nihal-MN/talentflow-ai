@@ -150,6 +150,7 @@ export function JobForm() {
                 id="job-file"
                 ref={fileInput}
                 type="file"
+            aria-label="Upload a job description file (PDF, DOCX or TXT)"
                 accept=".pdf,.docx,.txt,.md"
                 onChange={(event) => setFile(event.target.files?.[0] ?? null)}
                 className="block w-full cursor-pointer rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-6 text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-indigo-700 hover:border-indigo-300"
@@ -164,7 +165,7 @@ export function JobForm() {
             <Button type="submit" loading={submitting}>
               {submitting ? "Extracting requirements…" : "Create job & extract requirements"}
             </Button>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               The draft is validated before it is stored — no raw model output becomes database truth.
             </p>
           </div>

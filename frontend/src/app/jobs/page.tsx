@@ -95,7 +95,7 @@ export default function JobsPage() {
                     <td className="px-4 py-3 text-slate-600">{job.location ?? "—"}</td>
                     <td className="px-4 py-3">
                       <span className="text-slate-700">{job.must_have_count} must</span>
-                      <span className="text-slate-400"> · {job.preferred_count} preferred</span>
+                      <span className="text-slate-500"> · {job.preferred_count} preferred</span>
                     </td>
                     <td className="px-4 py-3 text-slate-600">{job.applications_count}</td>
                     <td className="px-4 py-3">

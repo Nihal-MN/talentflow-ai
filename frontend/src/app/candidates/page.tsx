@@ -79,6 +79,7 @@ export default function CandidatesPage() {
         <CardBody>
           <input
             type="file"
+            aria-label="Upload resumes (PDF, DOCX or TXT)"
             multiple
             accept=".pdf,.docx,.txt,.md"
             onChange={(event) => {
@@ -104,7 +105,7 @@ export default function CandidatesPage() {
                     {item.state === "uploading" ? "parsing…" : item.state === "done" ? "done" : "error"}
                   </Badge>
                   <span className="font-medium text-slate-700">{item.name}</span>
-                  <span className="truncate text-slate-400">{item.message}</span>
+                  <span className="truncate text-slate-500">{item.message}</span>
                 </li>
               ))}
             </ul>
@@ -165,7 +166,7 @@ export default function CandidatesPage() {
                     </td>
                     <td className="px-4 py-3 text-slate-600">
                       <div>{formatYears(candidate.years_experience)}</div>
-                      <div className="text-xs text-slate-400">{candidate.location ?? "—"}</div>
+                      <div className="text-xs text-slate-500">{candidate.location ?? "—"}</div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex max-w-xs flex-wrap gap-1">
@@ -178,7 +179,7 @@ export default function CandidatesPage() {
                           </span>
                         ))}
                         {candidate.skills.length > 5 ? (
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-slate-500">
                             +{candidate.skills.length - 5} more
                           </span>
                         ) : null}

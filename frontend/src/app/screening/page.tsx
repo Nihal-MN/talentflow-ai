@@ -99,8 +99,8 @@ export default function ScreeningPage() {
                     </span>
                     <StageBadge stage={set.stage} />
                   </div>
-                  <p className="truncate text-xs text-slate-500">{set.job_title}</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">
+                  <p className="truncate text-xs text-slate-600">{set.job_title}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-600">
                     {set.question_count} questions · {set.source} ·{" "}
                     {set.created_at ? formatDateTime(set.created_at) : "—"}
                   </p>

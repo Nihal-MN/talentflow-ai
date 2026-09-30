@@ -162,7 +162,7 @@ export default function CandidateDetailPage() {
           <Card>
             <CardBody>
               <ResumeTextCard text={candidate.resume_text} filename={candidate.resume_filename} />
-              <p className="mt-3 text-[11px] text-slate-400">
+              <p className="mt-3 text-[11px] text-slate-500">
                 Added {formatDate(candidate.created_at)} · parsed by {candidate.extraction_model ?? candidate.extraction_method}
               </p>
             </CardBody>

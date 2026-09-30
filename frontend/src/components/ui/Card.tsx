@@ -52,7 +52,7 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        {breadcrumb ? <div className="mb-1 text-xs text-slate-400">{breadcrumb}</div> : null}
+        {breadcrumb ? <div className="mb-1 text-xs text-slate-500">{breadcrumb}</div> : null}
         <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
         {subtitle ? <p className="mt-1 max-w-3xl text-sm text-slate-500">{subtitle}</p> : null}
       </div>

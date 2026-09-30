@@ -139,7 +139,7 @@ function DashboardContent({
               ))
             )}
             {rejected > 0 ? (
-              <p className="pt-1 text-xs text-slate-400">
+              <p className="pt-1 text-xs text-slate-500">
                 {rejected} rejected {rejected === 1 ? "candidate" : "candidates"} (not shown above)
               </p>
             ) : null}
@@ -173,7 +173,7 @@ function DashboardContent({
                           {event.job_title}
                         </Link>
                       </p>
-                      <p className="text-xs text-slate-400">{formatDateTime(event.at)}</p>
+                      <p className="text-xs text-slate-500">{formatDateTime(event.at)}</p>
                     </div>
                   </li>
                 ))}
@@ -192,7 +192,7 @@ function DashboardContent({
             <Badge className="bg-slate-100 text-slate-700 ring-slate-200">
               DB: {health.database.dialect}
             </Badge>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500">
               v{health.version} · {new Date(health.time).toLocaleString("en-GB")}
             </span>
           </div>

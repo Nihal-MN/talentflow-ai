@@ -267,7 +267,7 @@ talentflow-ai/
 ├── frontend/           Next.js app (9 pages + typed client + UI kit)
 ├── .github/            CI + CodeQL workflows, Dependabot, issue/PR templates
 ├── docs/               architecture, AI design, matching engine, API, testing,
-│                       ADRs, maintainer guides, screenshots, banner assets
+│                       accessibility, ADRs, maintainer guides, screenshots
 ├── examples/           synthetic JDs + resume files (PDF/DOCX/TXT)
 └── scripts/            dev launcher
 ```

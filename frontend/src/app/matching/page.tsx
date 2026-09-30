@@ -71,7 +71,7 @@ function MatchingInner() {
               Job details →
             </Link>
           ) : null}
-          <span className="ml-auto text-xs text-slate-400">
+          <span className="ml-auto text-xs text-slate-500">
             Ranking: composite score, then must-have coverage — never a black box
           </span>
         </CardBody>
@@ -128,7 +128,7 @@ function MatchingInner() {
               resume text.
             </li>
           </ol>
-          <p className="mt-3 text-xs text-slate-400">
+          <p className="mt-3 text-xs text-slate-500">
             No protected characteristics are used or inferred. AI assists; the recruiter decides.
             See RESPONSIBLE_AI.md in the repository.
           </p>

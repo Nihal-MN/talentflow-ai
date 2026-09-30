@@ -7,7 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Planned work lives in [ROADMAP.md](ROADMAP.md). Nothing yet.
+### Added
+
+- **International resume parsing** — dotted `DD.MM.YYYY` / `MM.YYYY` dates,
+  German/French/Spanish section headers (`BERUFSERFAHRUNG`, `AUSBILDUNG`,
+  `KENNTNISSE`, …) and dotted degree abbreviations (`B.Sc.`, `M.Sc.`,
+  `Diplom`); contact-line locations preferred over job-title lines.
+- **Skill taxonomy extensions** — `bash`, `swift`, `objective-c`, `dart`,
+  `scala`, `flutter`, `android`, `firebase`, `databricks`, `ansible`,
+  `pulumi`, `mlops`, `zendesk`, `freshdesk`; cloud aliases (`s3`, `ec2`,
+  `ecs`, `eks`, `gke`, `aks`); new `iac` and `mobile` families
+  (`backend/tests/test_skills.py`).
+- **Pagination completeness** — `offset` on `/applications`; **`X-Total-Count`**
+  response header on `/jobs`, `/candidates` and `/applications` (exposed via
+  CORS); boundary tests in `backend/tests/test_pagination.py`.
+- **Example data** — career-changer and non-Western date-format resumes plus a
+  support team-lead JD, and `scripts/verify_examples.sh` which uploads every
+  example file to a running API and prints an extraction summary.
+- **`docs/API.md` cookbook** — verified, copy-paste `curl` examples for the
+  full workflow (job → resume → match → pipeline → screening).
+- **`docs/ACCESSIBILITY.md`** — axe-core audit across all 9 pages, findings
+  and fixes (contrast, labels, heading order).
+
+### Fixed
+
+- Color contrast across the UI (muted text now meets AA on its actual
+  surface, per-surface rather than globally).
+- Accessible names for the resume and JD file inputs.
+- Heading order on the matching page.
 
 ## [0.1.0] - 2026-09-29
 

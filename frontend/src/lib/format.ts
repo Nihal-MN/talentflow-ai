@@ -93,7 +93,7 @@ export function formatScore(score: number | null | undefined): string {
 }
 
 export function scoreTone(score: number | null | undefined): string {
-  if (score === null || score === undefined) return "text-slate-400";
+  if (score === null || score === undefined) return "text-slate-500";
   if (score >= 75) return "text-emerald-600";
   if (score >= 50) return "text-amber-600";
   return "text-rose-600";

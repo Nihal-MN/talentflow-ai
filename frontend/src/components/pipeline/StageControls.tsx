@@ -86,7 +86,7 @@ export function StageControls({
           onChange={(event) => setNote(event.target.value)}
           placeholder="Optional note for the next move…"
           aria-label="Move note"
-          className="block w-full rounded-lg border-0 bg-white px-3 py-1.5 text-xs shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600"
+          className="block w-full rounded-lg border-0 bg-white px-3 py-1.5 text-xs shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-600"
         />
       ) : null}
     </div>

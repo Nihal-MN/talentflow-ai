@@ -94,7 +94,7 @@ export default function PipelinePage() {
                 </header>
                 <div className="scroll-thin flex max-h-[70vh] flex-col gap-2 overflow-y-auto px-2 pb-3">
                   {applications.length === 0 ? (
-                    <p className="px-1 py-2 text-xs text-slate-400">No candidates</p>
+                    <p className="px-1 py-2 text-xs text-slate-500">No candidates</p>
                   ) : (
                     applications.map((application) => (
                       <Card key={application.id} className="p-3">
@@ -104,8 +104,8 @@ export default function PipelinePage() {
                         >
                           {application.candidate.full_name}
                         </Link>
-                        <p className="truncate text-xs text-slate-500">{application.job.title}</p>
-                        <p className="mt-0.5 text-[11px] text-slate-400">
+                        <p className="truncate text-xs text-slate-600">{application.job.title}</p>
+                        <p className="mt-0.5 text-[11px] text-slate-500">
                           updated {formatDateTime(application.updated_at)}
                         </p>
                         <div className="mt-2">

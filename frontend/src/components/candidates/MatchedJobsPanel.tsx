@@ -51,7 +51,7 @@ export function MatchedJobsPanel({ candidateId }: { candidateId: number }) {
                     style={{ width: `${match.composite_score ?? 0}%` }}
                   />
                 </div>
-                <p className="mt-0.5 text-[11px] text-slate-400">
+                <p className="mt-0.5 text-[11px] text-slate-500">
                   {match.coverage.must_have.met}/{match.coverage.must_have.total} must-haves met
                   {match.stage ? ` · in pipeline: ${match.stage}` : ""}
                 </p>

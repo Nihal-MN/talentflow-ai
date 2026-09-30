@@ -24,7 +24,7 @@ export function ScoreBreakdown({ match }: { match: MatchResult }) {
           <span className="w-36 text-xs text-slate-500">
             {COMPONENT_LABELS[name] ?? name}
             {match.weights_used[name] !== undefined ? (
-              <span className="text-slate-400"> ×{match.weights_used[name].toFixed(2)}</span>
+              <span className="text-slate-500"> ×{match.weights_used[name].toFixed(2)}</span>
             ) : null}
           </span>
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
@@ -58,11 +58,11 @@ function EvidenceList({ evidence }: { evidence: Evidence[] }) {
                 : "border-slate-300 bg-slate-50 text-slate-700"
           }`}
         >
-          <span className="mr-1.5 rounded bg-white px-1 py-0.5 font-mono text-[10px] uppercase text-slate-400 ring-1 ring-slate-200">
+          <span className="mr-1.5 rounded bg-white px-1 py-0.5 font-mono text-[10px] uppercase text-slate-500 ring-1 ring-slate-200">
             {item.match_type}
           </span>
           “{item.snippet}”
-          {item.detail ? <span className="ml-1 text-slate-400">({item.detail})</span> : null}
+          {item.detail ? <span className="ml-1 text-slate-500">({item.detail})</span> : null}
         </li>
       ))}
     </ul>
@@ -94,7 +94,7 @@ function RequirementRow({ evaluation }: { evaluation: RequirementEvaluation }) {
           </span>
         </span>
         {hasDetail ? (
-          <span aria-hidden className="mt-0.5 text-xs text-slate-400">
+          <span aria-hidden className="mt-0.5 text-xs text-slate-500">
             {open ? "▾" : "▸"}
           </span>
         ) : null}
@@ -103,7 +103,7 @@ function RequirementRow({ evaluation }: { evaluation: RequirementEvaluation }) {
         <div className="ml-1 mt-1 border-l-2 border-slate-100 pl-4">
           <p className="text-xs leading-relaxed text-slate-500">{evaluation.reason}</p>
           {evaluation.similarity !== null ? (
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               Semantic similarity to profile: {evaluation.similarity.toFixed(2)}
             </p>
           ) : null}
@@ -154,7 +154,7 @@ export function MatchCard({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-slate-900">{match.candidate_name}</h3>
+            <h2 className="text-sm font-semibold text-slate-900">{match.candidate_name}</h2>
             {match.stage ? <StageBadge stage={match.stage} /> : null}
           </div>
           <p className="mt-0.5 text-xs text-slate-500">
@@ -169,7 +169,7 @@ export function MatchCard({
           <div className="text-right">
             <p className={`text-2xl font-semibold tabular-nums ${scoreTone(match.composite_score)}`}>
               {formatScore(match.composite_score)}
-              <span className="text-xs font-normal text-slate-400">/100</span>
+              <span className="text-xs font-normal text-slate-500">/100</span>
             </p>
             <div className="mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-slate-100">
               <div
@@ -196,13 +196,13 @@ export function MatchCard({
 
       <div className="grid gap-5 px-5 py-4 lg:grid-cols-2">
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             How this score is computed
           </p>
           <ScoreBreakdown match={match} />
         </div>
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             Must-have requirements
           </p>
           <ul className="divide-y divide-slate-100">
@@ -235,7 +235,7 @@ export function MatchCard({
       </div>
 
       <div className="border-t border-slate-100 px-5 py-2.5">
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500">
           Engine {match.engine_version} · generated {new Date(match.generated_at).toLocaleString("en-GB")} ·
           evidence quotes come from the candidate&apos;s own resume — the decision stays with you.
         </p>

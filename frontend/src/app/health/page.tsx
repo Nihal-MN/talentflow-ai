@@ -45,8 +45,8 @@ export default function HealthPage() {
           <ErrorState error={error} onRetry={reload} />
           <p className="text-sm text-slate-500">
             The API did not respond. If you run the stack locally, check{" "}
-            <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">docker compose ps</code> or start
-            the backend with <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">make dev</code>.
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700">docker compose ps</code> or start
+            the backend with <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-700">make dev</code>.
           </p>
         </div>
       ) : health ? (
@@ -108,9 +108,9 @@ export default function HealthPage() {
                     {health.database.detail}
                   </p>
                 ) : null}
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   PostgreSQL + pgvector in Docker; SQLite for zero-setup local dev. If degraded,{" "}
-                  <code className="rounded bg-slate-100 px-1 py-0.5">docker compose logs db</code> helps.
+                  <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">docker compose logs db</code> helps.
                 </p>
               </CardBody>
             </Card>
@@ -139,10 +139,10 @@ export default function HealthPage() {
                   <StatusPill ok={health.ai.api_key_configured} label={health.ai.api_key_configured ? "yes" : "no"} />
                 </div>
                 {health.ai.provider === "mock" ? (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Running in deterministic mock mode — set{" "}
-                    <code className="rounded bg-slate-100 px-1 py-0.5">OPENAI_API_KEY</code> in{" "}
-                    <code className="rounded bg-slate-100 px-1 py-0.5">.env</code> and restart to use the
+                    <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">OPENAI_API_KEY</code> in{" "}
+                    <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">.env</code> and restart to use the
                     OpenAI API. Extraction output is labeled per record either way.
                   </p>
                 ) : null}

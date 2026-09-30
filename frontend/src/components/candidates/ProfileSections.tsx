@@ -6,7 +6,7 @@ import type { Certification, Education, Experience, Skill } from "@/lib/types";
 import { formatMonth } from "@/lib/format";
 
 export function SummaryBlock({ summary }: { summary: string | null }) {
-  if (!summary) return <p className="text-sm text-slate-400">No summary on the resume.</p>;
+  if (!summary) return <p className="text-sm text-slate-500">No summary on the resume.</p>;
   return <p className="text-sm leading-relaxed text-slate-700">{summary}</p>;
 }
 
@@ -39,13 +39,13 @@ export function SkillChips({ skills }: { skills: Skill[] }) {
     );
   }, [skills]);
 
-  if (skills.length === 0) return <p className="text-sm text-slate-400">No skills extracted.</p>;
+  if (skills.length === 0) return <p className="text-sm text-slate-500">No skills extracted.</p>;
 
   return (
     <div className="space-y-3">
       {grouped.map(([category, categorySkills]) => (
         <div key={category}>
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
             {category}
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -77,7 +77,7 @@ export function SkillChips({ skills }: { skills: Skill[] }) {
 }
 
 export function ExperienceTimeline({ experiences }: { experiences: Experience[] }) {
-  if (experiences.length === 0) return <p className="text-sm text-slate-400">No roles extracted.</p>;
+  if (experiences.length === 0) return <p className="text-sm text-slate-500">No roles extracted.</p>;
   return (
     <ol className="relative space-y-4 border-l border-slate-200 pl-4">
       {experiences.map((experience) => (
@@ -92,7 +92,7 @@ export function ExperienceTimeline({ experiences }: { experiences: Experience[] 
             {experience.title ?? "Role"}
             {experience.company ? <span className="text-slate-500"> · {experience.company}</span> : null}
           </p>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             {formatMonth(experience.start_date)} – {experience.is_current ? "Present" : formatMonth(experience.end_date)}
             {experience.location ? ` · ${experience.location}` : ""}
           </p>
@@ -112,7 +112,7 @@ export function ExperienceTimeline({ experiences }: { experiences: Experience[] 
 }
 
 export function EducationList({ educations }: { educations: Education[] }) {
-  if (educations.length === 0) return <p className="text-sm text-slate-400">No education entries.</p>;
+  if (educations.length === 0) return <p className="text-sm text-slate-500">No education entries.</p>;
   return (
     <ul className="space-y-2">
       {educations.map((education) => (
@@ -120,7 +120,7 @@ export function EducationList({ educations }: { educations: Education[] }) {
           <span className="font-medium">{education.degree ?? "Studies"}</span>
           {education.institution ? <span className="text-slate-500"> · {education.institution}</span> : null}
           {education.start_year || education.end_year ? (
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500">
               {" "}
               ({education.start_year ?? "?"}–{education.end_year ?? "?"})
             </span>
@@ -132,13 +132,13 @@ export function EducationList({ educations }: { educations: Education[] }) {
 }
 
 export function CertificationsList({ certifications }: { certifications: Certification[] }) {
-  if (certifications.length === 0) return <p className="text-sm text-slate-400">No certifications.</p>;
+  if (certifications.length === 0) return <p className="text-sm text-slate-500">No certifications.</p>;
   return (
     <ul className="space-y-1.5">
       {certifications.map((certification) => (
         <li key={certification.id} className="text-sm text-slate-700">
           {certification.name}
-          {certification.year ? <span className="text-xs text-slate-400"> · {certification.year}</span> : null}
+          {certification.year ? <span className="text-xs text-slate-500"> · {certification.year}</span> : null}
         </li>
       ))}
     </ul>

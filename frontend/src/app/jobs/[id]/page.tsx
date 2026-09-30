@@ -137,7 +137,7 @@ export default function JobDetailPage() {
                       >
                         {application.candidate_name}
                       </Link>
-                      <p className="truncate text-xs text-slate-400">
+                      <p className="truncate text-xs text-slate-600">
                         updated {formatDateTime(application.updated_at)}
                       </p>
                     </div>
@@ -175,7 +175,7 @@ function RequirementGroup({ title, requirements }: { title: string; requirements
     return (
       <div>
         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</h3>
-        <p className="text-sm text-slate-400">None extracted.</p>
+        <p className="text-sm text-slate-500">None extracted.</p>
       </div>
     );
   }
