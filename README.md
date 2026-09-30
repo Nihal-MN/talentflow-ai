@@ -333,6 +333,13 @@ executed acceptance run (recorded in
 [CHATGPT_REVIEW_HANDOFF.md](CHATGPT_REVIEW_HANDOFF.md)). The commit history is
 real work, not manufactured activity.
 
+## Acknowledgements
+
+TalentFlow AI stands on excellent open source: FastAPI and Starlette, Pydantic,
+SQLAlchemy + Alembic, [pgvector](https://github.com/pgvector/pgvector), Next.js
+and React, Tailwind CSS, ruff, pytest, vitest, and the `uv` toolchain — thank
+you to all their maintainers and contributors.
+
 ## License
 
 MIT — see `LICENSE`.
