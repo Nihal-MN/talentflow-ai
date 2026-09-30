@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, File, Form, UploadFile
+from fastapi import APIRouter, File, Form, Response, UploadFile
 
 from app.api.deps import DbSession, EmbeddingsDep, LLMDep, SettingsDep
 from app.api.serializers import job_list_item, job_out
@@ -18,12 +18,14 @@ MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 @router.get("", response_model=list[JobListItem], summary="List jobs")
 def list_jobs(
     db: DbSession,
+    response: Response,
     status: str | None = None,
     q: str | None = None,
     limit: int = 100,
     offset: int = 0,
 ) -> list[JobListItem]:
     jobs = job_service.list_jobs(db, status=status, q=q, limit=limit, offset=offset)
+    response.headers["X-Total-Count"] = str(job_service.count_jobs(db, status=status, q=q))
     return [job_list_item(job) for job in jobs]
 
 

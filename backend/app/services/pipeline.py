@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.errors import NotFoundError, ValidationAppError
@@ -132,6 +132,7 @@ def list_applications(
     candidate_id: int | None = None,
     stage: str | None = None,
     limit: int = 200,
+    offset: int = 0,
 ) -> list[Application]:
     """List applications with candidate + job loaded."""
     statement = (
@@ -139,6 +140,7 @@ def list_applications(
         .options(*_APPLICATION_LOADERS)
         .order_by(Application.updated_at.desc(), Application.id.desc())
         .limit(max(1, min(limit, 500)))
+        .offset(max(0, offset))
     )
     if job_id is not None:
         statement = statement.where(Application.job_id == job_id)
@@ -147,6 +149,24 @@ def list_applications(
     if stage is not None:
         statement = statement.where(Application.stage == stage)
     return list(db.execute(statement).scalars())
+
+
+def count_applications(
+    db: Session,
+    *,
+    job_id: int | None = None,
+    candidate_id: int | None = None,
+    stage: str | None = None,
+) -> int:
+    """Total applications matching the same filters as :func:`list_applications`."""
+    statement = select(func.count()).select_from(Application)
+    if job_id is not None:
+        statement = statement.where(Application.job_id == job_id)
+    if candidate_id is not None:
+        statement = statement.where(Application.candidate_id == candidate_id)
+    if stage is not None:
+        statement = statement.where(Application.stage == stage)
+    return int(db.execute(statement).scalar_one())
 
 
 def get_board(db: Session, *, job_id: int | None = None) -> dict[str, list[Application]]:

@@ -181,6 +181,28 @@ def list_candidates(
     return list(db.execute(statement).scalars())
 
 
+def count_candidates(
+    db: Session,
+    *,
+    q: str | None = None,
+    skill: str | None = None,
+) -> int:
+    """Total candidates matching the same filters as :func:`list_candidates`."""
+    statement = select(func.count()).select_from(Candidate)
+    if q:
+        pattern = f"%{q.strip()}%"
+        statement = statement.where(
+            Candidate.full_name.ilike(pattern)
+            | Candidate.headline.ilike(pattern)
+            | Candidate.location.ilike(pattern)
+        )
+    if skill:
+        statement = statement.where(
+            Candidate.skills.any(CandidateSkill.normalized_name == skill.strip().lower())
+        )
+    return int(db.execute(statement).scalar_one())
+
+
 def delete_candidate(db: Session, candidate_id: int) -> None:
     """Delete a candidate, their rows (cascade) and their embeddings."""
     candidate = get_candidate(db, candidate_id)

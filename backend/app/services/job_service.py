@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.ai.base import EmbeddingProvider, LLMProvider
@@ -151,6 +151,22 @@ def list_jobs(
         pattern = f"%{q.strip()}%"
         statement = statement.where(Job.title.ilike(pattern) | Job.company.ilike(pattern))
     return list(db.execute(statement).scalars())
+
+
+def count_jobs(
+    db: Session,
+    *,
+    status: str | None = None,
+    q: str | None = None,
+) -> int:
+    """Total jobs matching the same filters as :func:`list_jobs`."""
+    statement = select(func.count()).select_from(Job)
+    if status:
+        statement = statement.where(Job.status == status)
+    if q:
+        pattern = f"%{q.strip()}%"
+        statement = statement.where(Job.title.ilike(pattern) | Job.company.ilike(pattern))
+    return int(db.execute(statement).scalar_one())
 
 
 def update_job(

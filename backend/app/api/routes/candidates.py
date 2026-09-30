@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, Response, UploadFile
 
 from app.api.deps import DbSession, EmbeddingsDep, LLMDep, SettingsDep
 from app.api.serializers import (
@@ -24,12 +24,16 @@ MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 @router.get("", response_model=list[CandidateListItem], summary="List candidates")
 def list_candidates(
     db: DbSession,
+    response: Response,
     q: str | None = None,
     skill: str | None = None,
     limit: int = 100,
     offset: int = 0,
 ) -> list[CandidateListItem]:
     candidates = candidate_service.list_candidates(db, q=q, skill=skill, limit=limit, offset=offset)
+    response.headers["X-Total-Count"] = str(
+        candidate_service.count_candidates(db, q=q, skill=skill)
+    )
     return [candidate_list_item(candidate) for candidate in candidates]
 
 

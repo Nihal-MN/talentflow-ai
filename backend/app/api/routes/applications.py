@@ -3,7 +3,7 @@ recent activity."""
 
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
 from app.api.deps import DbSession
 from app.api.serializers import application_out
@@ -21,13 +21,18 @@ router = APIRouter(prefix="/applications", tags=["pipeline"])
 @router.get("", response_model=list[ApplicationOut], summary="List applications")
 def list_applications(
     db: DbSession,
+    response: Response,
     job_id: int | None = None,
     candidate_id: int | None = None,
     stage: str | None = None,
     limit: int = 200,
+    offset: int = 0,
 ) -> list[ApplicationOut]:
     applications = pipeline.list_applications(
-        db, job_id=job_id, candidate_id=candidate_id, stage=stage, limit=limit
+        db, job_id=job_id, candidate_id=candidate_id, stage=stage, limit=limit, offset=offset
+    )
+    response.headers["X-Total-Count"] = str(
+        pipeline.count_applications(db, job_id=job_id, candidate_id=candidate_id, stage=stage)
     )
     return [application_out(application) for application in applications]
 
