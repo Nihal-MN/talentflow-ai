@@ -440,7 +440,7 @@ GitHub settings in §29.
 
 - **Repository:** https://github.com/Nihal-MN/talentflow-ai (public)
 - **Code state reviewed:** `b17b2c95f5a48646f97dc57e8093646cf02b3a5c`
-  (`b17b2c95`), branch `main`, 19 commits, tagged `v0.1.0`.
+  (`b17b2c95`), branch `main`, tagged `v0.1.0` (commit #19; later commits are documentation-only).
 - Commit author email: `138873694+Nihal-MN@users.noreply.github.com` (verified
   with `git log --format='%ae' | sort -u` — no personal email in public history).
 - Commits after the reviewed SHA touch docs/CI configuration only; run
@@ -503,17 +503,20 @@ the tests and the E2E run above.
   Docker image builds) and CodeQL (Python + JavaScript/TypeScript). See the
   repo's Actions tab.
 - **Release tag:** `v0.1.0` pushed (annotated tag on `b17b2c95`).
-- **GitHub Release page:** pending owner clicks — release notes are
-  pre-written in `docs/releases/v0.1.0.md` (§29 item 1).
-- **Description / topics:** pending owner clicks (§29 item 2).
-- **Security features:** pending owner clicks (§29 item 3) — private
-  vulnerability reporting, Dependabot alerts + security updates, push
-  protection. Secret scanning is enabled by default for public repositories.
+- **GitHub Release page: PUBLISHED** —
+  https://github.com/Nihal-MN/talentflow-ai/releases/tag/v0.1.0.
+- **Description + 12 topics: applied.** Wiki and Projects disabled.
+- **Security features: ENABLED** — private vulnerability reporting
+  (verified `{"enabled":true}`), Dependabot alerts + security updates, secret
+  scanning + push protection (all verified via the API).
+- **Starter issues:** #10–#15 open (5 starter issues + a dependency-migration
+  tracker); the two failing Dependabot PRs (#1 ESLint 10, #8 TypeScript 7)
+  carry comments pointing at #15.
 - **Dependabot:** opened 9 upgrade PRs automatically after the first push;
   7 are passing CI, 2 major bumps (ESLint 10, TypeScript 7.0.2) fail CI and
   await migration work (§23).
 - **Social preview image:** prepared at `docs/assets/social-preview.png`
-  (1280×640) — upload path in §29 item 4.
+  (1280×640) — the only remaining owner click (§29).
 - **Local validations re-run on this state:** fresh-clone → `uv sync` →
   suite green; `docker compose down -v` → clean build → healthy → seed →
   health `ok` (postgresql/mock, 10 candidates · 4 jobs · 10 applications);
@@ -521,31 +524,15 @@ the tests and the E2E run above.
   only; one real-resume test upload found in the local demo DB during the
   sweep was removed and backed up outside the repository).
 
-## 29. Manual GitHub settings still required (owner, ~5 minutes total)
+## 29. Remaining owner actions (tiny)
 
-Everything below is account-level; this environment holds no authenticated
-GitHub API session (by design — no credentials were requested or stored).
-Exact paths:
+Everything programmatic was completed via the authenticated GitHub API (see
+§28). What genuinely remains:
 
-1. **GitHub Release page** — open
-   https://github.com/Nihal-MN/talentflow-ai/releases/new?tag=v0.1.0
-   Title: `v0.1.0 — Explainable AI hiring pipeline (first public release)` ·
-   body: paste the content of `docs/releases/v0.1.0.md` → **Publish release**.
-2. **Description + topics** — repo page → ⚙️ gear next to "About" —
-   Description: "Open-source AI-native hiring pipeline with structured talent
-   data, explainable candidate matching, semantic search, and
-   recruiter-in-the-loop workflows." · Topics: `talent-engineering`,
-   `recruiting`, `recruitment`, `hr-tech`, `artificial-intelligence`, `llm`,
-   `semantic-search`, `fastapi`, `nextjs`, `postgresql`, `pgvector`,
-   `open-source`.
-3. **Security settings** —
-   https://github.com/Nihal-MN/talentflow-ai/settings/security_analysis →
-   enable **Private vulnerability reporting**, **Dependabot alerts**,
-   **Dependabot security updates**, **Secret scanning push protection**.
-4. **Social preview** — https://github.com/Nihal-MN/talentflow-ai/settings →
-   *Social preview* → upload `docs/assets/social-preview.png`.
-5. Optional: enable **Discussions** (Settings → Features) once a community
+1. **Social preview image** (UI-only — GitHub exposes no API for it):
+   https://github.com/Nihal-MN/talentflow-ai/settings → *Social preview* →
+   upload `docs/assets/social-preview.png`.
+2. Optional: enable **Discussions** (Settings → Features) once a community
    exists; keep Wiki and Projects off — documentation lives in `docs/`.
-
-Alternative: authorize this assistant once via GitHub's device flow (30
-seconds) and items 1–3 complete programmatically.
+3. Optional housekeeping: review the 7 green Dependabot PRs; handle #1/#8 per
+   the plan in issue #15.
