@@ -36,7 +36,7 @@ jobs:
       DATABASE_URL: postgresql+psycopg://talentflow:talentflow@localhost:5432/talentflow
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - name: Install dependencies (frozen lockfile)
