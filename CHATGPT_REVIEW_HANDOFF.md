@@ -380,7 +380,7 @@ automated judgement is traceable to quoted evidence + published weights.
 ## 19. Startup instructions
 
 ```bash
-git clone <repo-url> talentflow-ai && cd talentflow-ai
+git clone https://github.com/Nihal-MN/talentflow-ai && cd talentflow-ai
 cp .env.example .env
 docker compose up --build -d          # db → api → web (healthchecks gate order)
 docker compose exec api python -m app.seed
@@ -432,11 +432,19 @@ CI return nothing). The items under "Roadmap" in README.md are **planned
 scope**, deliberately not stubs. If you want a TODO list for a v2, start with
 auth, then CSV export, then reranking evaluation.
 
+Non-code follow-ups: the two failing Dependabot major bumps (ESLint 10 and
+TypeScript 7.0.2 — migration work deferred post-0.1.0), and the owner-only
+GitHub settings in §29.
+
 ## 24. Current Git commit hash
 
-- Code state reviewed: `e6e000535bb526ce1299ec339d3aa3825d4b9d95` (`e6e0005`).
-- This document + the two companion docs are committed immediately after it;
-  run `git log --oneline -3` for the exact tip.
+- **Repository:** https://github.com/Nihal-MN/talentflow-ai (public)
+- **Code state reviewed:** `b17b2c95f5a48646f97dc57e8093646cf02b3a5c`
+  (`b17b2c95`), branch `main`, 19 commits, tagged `v0.1.0`.
+- Commit author email: `138873694+Nihal-MN@users.noreply.github.com` (verified
+  with `git log --format='%ae' | sort -u` — no personal email in public history).
+- Commits after the reviewed SHA touch docs/CI configuration only; run
+  `git log --oneline` for the exact tip of `main`.
 
 ## 25. Test results (actual, 28 Sep 2026)
 
@@ -484,3 +492,60 @@ Nothing else is mocked: pipeline, notes/tags, health, matching, evidence,
 ranking, migrations and the UI flows are the real implementations exercised by
 the tests and the E2E run above.
 
+
+
+## 28. Publication status (30 Sep 2026)
+
+- **Repository:** https://github.com/Nihal-MN/talentflow-ai — public, MIT
+  detected by GitHub, default branch `main`.
+- **CI on `main`: GREEN** — CI workflow (backend tests against a real
+  PostgreSQL+pgvector service container, frontend lint/types/tests/build,
+  Docker image builds) and CodeQL (Python + JavaScript/TypeScript). See the
+  repo's Actions tab.
+- **Release tag:** `v0.1.0` pushed (annotated tag on `b17b2c95`).
+- **GitHub Release page:** pending owner clicks — release notes are
+  pre-written in `docs/releases/v0.1.0.md` (§29 item 1).
+- **Description / topics:** pending owner clicks (§29 item 2).
+- **Security features:** pending owner clicks (§29 item 3) — private
+  vulnerability reporting, Dependabot alerts + security updates, push
+  protection. Secret scanning is enabled by default for public repositories.
+- **Dependabot:** opened 9 upgrade PRs automatically after the first push;
+  7 are passing CI, 2 major bumps (ESLint 10, TypeScript 7.0.2) fail CI and
+  await migration work (§23).
+- **Social preview image:** prepared at `docs/assets/social-preview.png`
+  (1280×640) — upload path in §29 item 4.
+- **Local validations re-run on this state:** fresh-clone → `uv sync` →
+  suite green; `docker compose down -v` → clean build → healthy → seed →
+  health `ok` (postgresql/mock, 10 candidates · 4 jobs · 10 applications);
+  all 25 relative doc links resolve; secret/PII sweep clean (synthetic data
+  only; one real-resume test upload found in the local demo DB during the
+  sweep was removed and backed up outside the repository).
+
+## 29. Manual GitHub settings still required (owner, ~5 minutes total)
+
+Everything below is account-level; this environment holds no authenticated
+GitHub API session (by design — no credentials were requested or stored).
+Exact paths:
+
+1. **GitHub Release page** — open
+   https://github.com/Nihal-MN/talentflow-ai/releases/new?tag=v0.1.0
+   Title: `v0.1.0 — Explainable AI hiring pipeline (first public release)` ·
+   body: paste the content of `docs/releases/v0.1.0.md` → **Publish release**.
+2. **Description + topics** — repo page → ⚙️ gear next to "About" —
+   Description: "Open-source AI-native hiring pipeline with structured talent
+   data, explainable candidate matching, semantic search, and
+   recruiter-in-the-loop workflows." · Topics: `talent-engineering`,
+   `recruiting`, `recruitment`, `hr-tech`, `artificial-intelligence`, `llm`,
+   `semantic-search`, `fastapi`, `nextjs`, `postgresql`, `pgvector`,
+   `open-source`.
+3. **Security settings** —
+   https://github.com/Nihal-MN/talentflow-ai/settings/security_analysis →
+   enable **Private vulnerability reporting**, **Dependabot alerts**,
+   **Dependabot security updates**, **Secret scanning push protection**.
+4. **Social preview** — https://github.com/Nihal-MN/talentflow-ai/settings →
+   *Social preview* → upload `docs/assets/social-preview.png`.
+5. Optional: enable **Discussions** (Settings → Features) once a community
+   exists; keep Wiki and Projects off — documentation lives in `docs/`.
+
+Alternative: authorize this assistant once via GitHub's device flow (30
+seconds) and items 1–3 complete programmatically.
