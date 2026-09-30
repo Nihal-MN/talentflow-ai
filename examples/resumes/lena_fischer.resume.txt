@@ -1,0 +1,28 @@
+Lena Fischer
+Backend Engineer
+lena.fischer@example.com | +49 30 555 0189 | Berlin, Germany
+linkedin.com/in/lena-fischer
+
+PROFIL
+Backend engineer with six years building APIs and data services for logistics
+platforms.
+
+BERUFSERFAHRUNG
+Senior Backend Engineer — Nordwind Logistik GmbH, Berlin
+01.04.2021 – 31.12.2026
+- Designed and shipped a pallet-tracking microservice in Go handling 2k requests/second.
+- Migrated a legacy monolith to event-driven services using Kafka and PostgreSQL.
+- Introduced Docker and Kubernetes deployments; automated releases with GitHub Actions.
+- Led performance work: cut p99 latency from 800ms to 120ms.
+
+Backend Developer — Spree Commerce Solutions, Berlin
+15.06.2019 – 31.03.2021
+- Built REST APIs in Python (Django) and maintained MySQL schemas.
+- Wrote integration tests (pytest) and set up monitoring with Grafana and Prometheus.
+
+EDUCATION
+B.Sc. Informatik — Technische Universität Berlin, 10.2015 – 09.2018
+
+SKILLS
+Go, Python, Django, PostgreSQL, MySQL, Kafka, Docker, Kubernetes, GitHub Actions,
+Grafana, Prometheus, pytest, Linux

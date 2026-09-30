@@ -1,0 +1,28 @@
+Dana Whitfield
+Customer Support Specialist → Data Analytics (career transition)
+dana.whitfield@example.com | +971 55 555 0210 | Dubai, UAE
+linkedin.com/in/dana-whitfield
+
+SUMMARY
+Customer support specialist with four years of frontline experience, moving
+into data analytics. Built reporting for support operations and completed
+intensive analytics training.
+
+EXPERIENCE
+Senior Customer Support Specialist — Meridian Freight Systems, Dubai (2022 - Present)
+- Automated the weekly ticket report with SQL and Excel, saving six hours per week.
+- Built Power BI dashboards tracking response times for a team of 40 agents.
+- Owned the knowledge-base migration; wrote SQL queries against the support database.
+
+Support Associate — Gulf Line Logistics, Dubai (2020 - 2022)
+- Handled 60+ tickets weekly; owned escalation reporting in Excel.
+- Partnered with engineering on bug triage and release notes.
+
+PROJECTS
+Sales analytics case study (self-directed): cleaned a 50,000-row dataset in
+pandas, computed conversion metrics, presented findings in a Looker Studio dashboard.
+SQL practice portfolio: 30+ queries over PostgreSQL sample databases.
+
+SKILLS
+SQL, Excel, Power BI, Looker Studio, pandas, Python (basic), data visualization,
+stakeholder communication, Jira
